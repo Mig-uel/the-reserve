@@ -31,9 +31,9 @@ export default function Header() {
             </Link>
           </Button>
 
-          <Button asChild variant='ghost'>
+          <Button asChild variant='default'>
             <Link href='/sign-in'>
-              <UserIcon />
+              <UserIcon /> Sign In
             </Link>
           </Button>
         </div>
