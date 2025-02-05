@@ -1,8 +1,8 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import type { Product } from '@/lib/types'
 import Image from 'next/image'
 import Link from 'next/link'
 import ProductPrice from './product-price'
+import type { Product } from '@/types'
 
 export default function ProductCard({ product }: { product: Product }) {
   return (
