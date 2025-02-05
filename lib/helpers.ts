@@ -1,6 +1,7 @@
 import { prisma } from '@/db/prisma'
+import { notFound } from 'next/navigation'
 
-// get latest products
+/** Get latest products */
 export async function getLatestProducts() {
   const data = await prisma.product.findMany({
     take: 4,
@@ -10,4 +11,17 @@ export async function getLatestProducts() {
   })
 
   return data
+}
+
+/** Get single product */
+export async function getProductBySlug(slug: string) {
+  const product = await prisma.product.findFirst({
+    where: {
+      slug,
+    },
+  })
+
+  if (!product) return notFound()
+
+  return product
 }
