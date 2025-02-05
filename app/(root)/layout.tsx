@@ -1,11 +1,5 @@
 import Footer from '@/components/footer'
 import Header from '@/components/shared/header'
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'The Reserve',
-  description: 'Step Into the Reserve. Step Into Luxury.',
-}
 
 export default function RootLayout({
   children,
