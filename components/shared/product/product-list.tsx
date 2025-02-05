@@ -1,4 +1,4 @@
-import type { Product } from '@/lib/types'
+import type { Product } from '@/types'
 import ProductCard from './product-card'
 
 export default function ProductList({
