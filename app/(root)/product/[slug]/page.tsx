@@ -4,9 +4,19 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { getProductBySlug } from '@/lib/helpers'
+import type { Metadata } from 'next'
 
 type Props = {
   params: Promise<{ slug: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params
+  const product = await getProductBySlug(slug)
+
+  return {
+    title: product.name,
+  }
 }
 
 export default async function Page({ params }: Props) {
