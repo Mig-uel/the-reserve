@@ -1,4 +1,5 @@
 import ProductList from '@/components/shared/product/product-list'
+import { LATEST_PRODUCTS_LIMIT } from '@/lib/constants'
 import { getLatestProducts } from '@/lib/helpers'
 import type { Product } from '@/lib/types'
 import { convertToPlainObject } from '@/lib/utils'
@@ -15,7 +16,11 @@ export default async function Page() {
 
   return (
     <>
-      <ProductList data={latestProducts} title='Newest Arrivals' limit={4} />
+      <ProductList
+        data={latestProducts}
+        title='Newest Arrivals'
+        limit={LATEST_PRODUCTS_LIMIT}
+      />
     </>
   )
 }
