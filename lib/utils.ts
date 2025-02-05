@@ -9,3 +9,10 @@ export function cn(...inputs: ClassValue[]) {
 export function convertToPlainObject<T>(value: T): T {
   return JSON.parse(JSON.stringify(value))
 }
+
+// format number with decimal places
+export function formatNumberWithDecimalPlaces(num: number): string {
+  const [int, float] = num.toString().split('.')
+
+  return float ? `${int}.${float.padEnd(2, '0')}` : `${int}.00`
+}
