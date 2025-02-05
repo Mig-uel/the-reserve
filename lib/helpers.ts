@@ -11,5 +11,9 @@ export async function getLatestProducts() {
     },
   })
 
-  return data
+  return data.map((product) => ({
+    ...product,
+    price: product.price.toString(),
+    rating: product.rating.toString(),
+  }))
 }
