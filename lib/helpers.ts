@@ -1,3 +1,5 @@
+'use server'
+
 import { signIn, signOut } from '@/auth'
 import { prisma } from '@/db/prisma'
 import { isRedirectError } from 'next/dist/client/components/redirect-error'
