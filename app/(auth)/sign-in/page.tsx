@@ -13,14 +13,20 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import CredentialsSignInForm from './credentials-sign-in-form'
 
+type Props = {
+  searchParams: Promise<{ callbackUrl: string }>
+}
+
 export const metadata: Metadata = {
   title: 'Sign In',
 }
 
-export default async function Page() {
+export default async function Page({ searchParams }: Props) {
+  const { callbackUrl } = await searchParams
+
   const session = await auth()
 
-  if (session) return redirect('/')
+  if (session) return redirect(callbackUrl || '/')
 
   return (
     <div className='w-full max-w-md mx-auto'>
