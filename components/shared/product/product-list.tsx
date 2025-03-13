@@ -1,8 +1,8 @@
-import type { Products } from '@/lib/types'
+import type { Product } from '@prisma/client'
 import ProductCard from './product-card'
 
 type ProductListProps = {
-  data: Products
+  data: Product[]
   title?: string
   limit?: number
 }
