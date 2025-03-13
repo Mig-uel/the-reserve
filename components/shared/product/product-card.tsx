@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import type { Product } from '@/lib/types'
+import type { Product } from '@prisma/client'
 import Image from 'next/image'
 import Link from 'next/link'
 import ProductPrice from './product-price'
@@ -29,10 +29,10 @@ export default function ProductCard({ product }: { product: Product }) {
         </Link>
 
         <div className='flex-between gap-4'>
-          <p>{product.rating} stars</p>
+          <p>{+product.rating} stars</p>
 
           {product.stock ? (
-            <ProductPrice value={product.price} />
+            <ProductPrice value={+product.price} />
           ) : (
             <p className='text-destructive'>Out of Stock</p>
           )}
