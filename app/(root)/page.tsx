@@ -4,7 +4,11 @@ import sampleData from '@/db/sample-data'
 export default function Homepage() {
   return (
     <>
-      <ProductList data={sampleData.products} title='Newest Arrivals' />
+      <ProductList
+        data={sampleData.products}
+        title='Newest Arrivals'
+        limit={4}
+      />
     </>
   )
 }
