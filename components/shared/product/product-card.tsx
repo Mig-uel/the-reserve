@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import type { Product } from '@/lib/types'
 import Image from 'next/image'
 import Link from 'next/link'
+import ProductPrice from './product-price'
 
 export default function ProductCard({ product }: { product: Product }) {
   const href = `/product/${product.slug}`
@@ -31,7 +32,7 @@ export default function ProductCard({ product }: { product: Product }) {
           <p>{product.rating} stars</p>
 
           {product.stock ? (
-            <p className='font-bold'>{product.price}</p>
+            <ProductPrice value={product.price} />
           ) : (
             <p className='text-destructive'>Out of Stock</p>
           )}
