@@ -1,6 +1,5 @@
-import sampleData from '@/db/sample-data'
+import type { Products } from '@/lib/types'
 
-type Products = typeof sampleData.products
 type ProductListProps = {
   data: Products
   title?: string
