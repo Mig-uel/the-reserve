@@ -3,7 +3,9 @@
 // TODO: simplify returns (return redirect instead of returning message on success)
 
 import { signIn, signOut } from '@/auth'
-import { SignInFormSchema } from '@/zod/validators'
+import { prisma } from '@/db/prisma'
+import { SignInFormSchema, SignUpFormSchema } from '@/zod/validators'
+import { hashSync } from 'bcrypt-ts-edge'
 import { isRedirectError } from 'next/dist/client/components/redirect-error'
 
 /**
@@ -42,4 +44,42 @@ export async function signInWithCredentials(
  */
 export async function signOutUser() {
   await signOut()
+}
+
+/**
+ * Sign Up User
+ */
+export async function signUpUser(prevState: unknown, formData: FormData) {
+  try {
+    const user = SignUpFormSchema.parse({
+      name: formData.get('name'),
+      email: formData.get('email'),
+      password: formData.get('password'),
+      confirmPassword: formData.get('confirmPassword'),
+    })
+
+    const plainPassword = user.password
+    user.password = hashSync(user.password)
+
+    await prisma.user.create({
+      data: user,
+    })
+
+    await signIn('credentials', {
+      email: user.email,
+      password: plainPassword,
+    })
+
+    return {
+      message: 'Registration successful',
+      success: true,
+    }
+  } catch (error) {
+    if (isRedirectError(error)) throw error
+
+    return {
+      success: false,
+      message: 'Registration unsuccessful',
+    }
+  }
 }
