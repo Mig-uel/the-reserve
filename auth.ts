@@ -77,21 +77,6 @@ export const config: NextAuthConfig = {
       // assign user fields to the token
       if (user) {
         token.role = user.role
-
-        // if user has no name, use first part of their email
-        if (user.name === 'NO_NAME') {
-          token.name = user.email?.split('@')[0]
-        }
-
-        // update the database to reflect token name
-        await prisma.user.update({
-          where: {
-            id: user.id,
-          },
-          data: {
-            name: token.name as string,
-          },
-        })
       }
 
       return token
