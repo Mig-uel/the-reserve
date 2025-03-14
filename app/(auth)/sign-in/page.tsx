@@ -12,10 +12,15 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
-export default async function SignInPage() {
-  const session = await auth()
+type Props = {
+  searchParams: Promise<{ callbackUrl: string }>
+}
 
-  if (session) return redirect('/')
+export default async function SignInPage({ searchParams }: Props) {
+  const session = await auth()
+  const { callbackUrl } = await searchParams
+
+  if (session) return redirect(new URL(callbackUrl).href || '/')
 
   return (
     <div className='w-full max-w-md mx-auto'>
