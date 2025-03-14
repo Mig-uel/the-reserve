@@ -1,8 +1,18 @@
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import { compareSync } from 'bcrypt-ts-edge'
-import NextAuth, { NextAuthConfig } from 'next-auth'
+import NextAuth, { type NextAuthConfig, type DefaultSession } from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import { prisma } from './db/prisma'
+
+declare module 'next-auth' {
+  /**
+   * Returned by `auth`, `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
+   */
+
+  interface Session {
+    user: {} & DefaultSession['user']
+  }
+}
 
 export const config: NextAuthConfig = {
   pages: {
