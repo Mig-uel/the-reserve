@@ -31,6 +31,7 @@ export async function signInWithCredentials(
     return {
       success: false,
       message: 'Invalid email or password',
+      email: formData.get('email'),
     }
   }
 }
