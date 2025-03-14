@@ -7,6 +7,7 @@ import { prisma } from '@/db/prisma'
 import { SignInFormSchema, SignUpFormSchema } from '@/zod/validators'
 import { hashSync } from 'bcrypt-ts-edge'
 import { isRedirectError } from 'next/dist/client/components/redirect-error'
+import { formatErrors } from '../utils'
 
 /**
  * Sign In User with Credentials
@@ -85,9 +86,10 @@ export async function signUpUser(
   } catch (error) {
     if (isRedirectError(error)) throw error
 
-    return {
-      success: false,
-      message: 'Registration unsuccessful',
-    }
+    if (error instanceof Error)
+      return {
+        success: false,
+        message: formatErrors(error),
+      }
   }
 }
