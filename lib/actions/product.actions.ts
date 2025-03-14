@@ -4,7 +4,7 @@ import { convertToPlainObject } from '../utils'
 import { LATEST_PRODUCTS_LIMIT } from '../constants'
 
 /**
- * Get latest products
+ * Get Latest Products
  */
 export async function getLatestProducts() {
   const data = await prisma.product.findMany({
@@ -13,4 +13,15 @@ export async function getLatestProducts() {
   })
 
   return convertToPlainObject(data)
+}
+
+/**
+ * Get Single Product By Slug
+ */
+export async function getProductBySlug(slug: string) {
+  return await prisma.product.findFirst({
+    where: {
+      slug,
+    },
+  })
 }
