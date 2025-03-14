@@ -66,7 +66,11 @@ export async function signUpUser(
     user.password = hashSync(user.password)
 
     await prisma.user.create({
-      data: user,
+      data: {
+        name: user.name,
+        email: user.email,
+        password: user.password,
+      },
     })
 
     await signIn('credentials', {
