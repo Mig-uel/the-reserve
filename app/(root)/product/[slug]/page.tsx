@@ -83,13 +83,13 @@ export default async function ProductDetailsPage({ params }: Props) {
                   )}
                 </div>
 
-                {product.stock && (
+                {product.stock ? (
                   <div className='flex'>
                     <Button className='w-full'>
                       <PlusIcon /> Add to Cart
                     </Button>
                   </div>
-                )}
+                ) : null}
               </CardContent>
             </Card>
           </div>
