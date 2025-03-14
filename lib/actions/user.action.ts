@@ -1,6 +1,6 @@
 'use server'
 
-import { signIn } from '@/auth'
+import { signIn, signOut } from '@/auth'
 import { SignInFormSchema } from '@/zod/validators'
 import { isRedirectError } from 'next/dist/client/components/redirect-error'
 
@@ -33,4 +33,11 @@ export async function signInWithCredentials(
       message: 'Invalid email or password',
     }
   }
+}
+
+/**
+ * Sign Out User
+ */
+export async function signOutUser() {
+  await signOut()
 }
