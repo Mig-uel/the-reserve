@@ -1,3 +1,4 @@
+import SignInForm from '@/components/sign-in-form'
 import {
   Card,
   CardContent,
@@ -31,7 +32,7 @@ export default function SignInPage() {
         </CardHeader>
 
         <CardContent className='space-y-4'>
-          {/* TODO: Sign In Form Component */}
+          <SignInForm />
         </CardContent>
       </Card>
     </div>
