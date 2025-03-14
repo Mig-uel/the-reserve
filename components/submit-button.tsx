@@ -17,7 +17,7 @@ export default function SubmitButton({
       variant='default'
       disabled={pending}
     >
-      {pending ? 'Loading...' : children}
+      {pending ? 'Submitting...' : children}
     </Button>
   )
 }
