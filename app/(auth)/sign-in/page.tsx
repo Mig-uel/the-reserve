@@ -20,7 +20,7 @@ export default async function SignInPage({ searchParams }: Props) {
   const session = await auth()
   const { callbackUrl } = await searchParams
 
-  if (session) return redirect(new URL(callbackUrl).href || '/')
+  if (session) return redirect(callbackUrl || '/')
 
   return (
     <div className='w-full max-w-md mx-auto'>
