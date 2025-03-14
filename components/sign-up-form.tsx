@@ -83,7 +83,7 @@ export default function SignUpForm() {
           <SubmitButton>Sign Up</SubmitButton>
         </div>
 
-        {data && !data.success ? (
+        {data && !data.success && data.message ? (
           <div className='text-center text-destructive'>{data.message}</div>
         ) : null}
 
