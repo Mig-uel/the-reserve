@@ -1,3 +1,4 @@
+import { auth } from '@/auth'
 import SignInForm from '@/components/sign-in-form'
 import {
   Card,
@@ -9,8 +10,13 @@ import {
 import { APP_NAME } from '@/lib/constants'
 import Image from 'next/image'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 
-export default function SignInPage() {
+export default async function SignInPage() {
+  const session = await auth()
+
+  if (session) return redirect('/')
+
   return (
     <div className='w-full max-w-md mx-auto'>
       <Card>
