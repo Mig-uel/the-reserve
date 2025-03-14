@@ -1,4 +1,5 @@
 import { auth } from '@/auth'
+import SignUpForm from '@/components/sign-up-form'
 import {
   Card,
   CardContent,
@@ -42,7 +43,7 @@ export default async function SignInPage({ searchParams }: Props) {
         </CardHeader>
 
         <CardContent className='space-y-4'>
-          {/* Sign Up Form Component */}
+          <SignUpForm />
         </CardContent>
       </Card>
     </div>
