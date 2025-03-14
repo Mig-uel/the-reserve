@@ -1,5 +1,7 @@
 'use client'
 
+// TODO: cleanup unused callbackUrl bind (we aren't using in the backend)
+
 import { signInWithCredentials } from '@/lib/actions/user.action'
 import Link from 'next/link'
 import { useActionState } from 'react'
@@ -7,13 +9,20 @@ import SubmitButton from './submit-button'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
+import { useSearchParams } from 'next/navigation'
 
 export default function SignInForm() {
-  const [data, action, isPending] = useActionState(signInWithCredentials, {
-    message: '',
-    success: false,
-    email: '',
-  })
+  const searchParams = useSearchParams()
+  const callbackUrl = searchParams.get('callbackUrl') || ''
+
+  const [data, action, isPending] = useActionState(
+    signInWithCredentials.bind(null, callbackUrl),
+    {
+      message: '',
+      success: false,
+      email: '',
+    }
+  )
 
   return (
     <form action={action}>
