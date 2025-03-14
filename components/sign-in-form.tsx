@@ -41,7 +41,7 @@ export default function SignInForm() {
           />
         </div>
 
-        {/* Password Input*/}
+        {/* Password Input */}
         <div>
           <Label htmlFor='password'>Password</Label>
           <Input
