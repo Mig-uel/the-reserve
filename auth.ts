@@ -1,18 +1,8 @@
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import { compareSync } from 'bcrypt-ts-edge'
-import NextAuth, { type NextAuthConfig, type DefaultSession } from 'next-auth'
+import NextAuth, { type NextAuthConfig } from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import { prisma } from './db/prisma'
-
-declare module 'next-auth' {
-  /**
-   * Returned by `auth`, `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
-   */
-
-  interface Session {
-    user: {} & DefaultSession['user']
-  }
-}
 
 export const config: NextAuthConfig = {
   pages: {
@@ -72,6 +62,8 @@ export const config: NextAuthConfig = {
     async session({ session, token, user, trigger }) {
       // set the user ID from the token
       session.user.id = token.sub!
+      session.user.role = token.role
+      session.user.name = token.name
 
       // if there is an update, set the user's name
       if (trigger === 'update') {
@@ -79,6 +71,30 @@ export const config: NextAuthConfig = {
       }
 
       return session
+    },
+
+    async jwt({ token, user }) {
+      // assign user fields to the token
+      if (user) {
+        token.role = user.role
+
+        // if user has no name, use first part of their email
+        if (user.name === 'NO_NAME') {
+          token.name = user.email?.split('@')[0]
+        }
+
+        // update the database to reflect token name
+        await prisma.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            name: token.name as string,
+          },
+        })
+      }
+
+      return token
     },
   },
 }
