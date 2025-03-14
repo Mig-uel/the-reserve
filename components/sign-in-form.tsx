@@ -1,13 +1,22 @@
 'use client'
 
+import { signInWithCredentials } from '@/lib/actions/user.action'
 import Link from 'next/link'
+import { useActionState } from 'react'
+import SubmitButton from './submit-button'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
 
 export default function SignInForm() {
+  const [data, action, isPending] = useActionState(signInWithCredentials, {
+    message: '',
+    success: false,
+    email: '',
+  })
+
   return (
-    <form>
+    <form action={action}>
       <div className='space-y-6'>
         {/* Email Input */}
         <div>
@@ -18,6 +27,8 @@ export default function SignInForm() {
             type='email'
             required
             autoComplete='email'
+            disabled={isPending}
+            defaultValue={data?.email as string}
           />
         </div>
 
@@ -30,15 +41,18 @@ export default function SignInForm() {
             type='password'
             autoComplete='password'
             required
+            disabled={isPending}
           />
         </div>
 
         {/* Submit Button */}
         <div>
-          <Button className='w-full' type='submit' variant='default'>
-            Sign In
-          </Button>
+          <SubmitButton>Sign In</SubmitButton>
         </div>
+
+        {data && !data.success ? (
+          <div className='text-center text-destructive'>{data.message}</div>
+        ) : null}
 
         {/* Sign Up Link */}
         <div className='text-sm text-center text-muted-foreground'>
