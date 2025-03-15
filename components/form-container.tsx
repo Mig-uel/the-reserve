@@ -1,6 +1,7 @@
 'use client'
 
 import { cn } from '@/lib/utils'
+import { useRouter } from 'next/navigation'
 import { useActionState, useEffect } from 'react'
 import { toast } from 'sonner'
 
@@ -26,11 +27,22 @@ export default function FormContainer({
   children: React.ReactNode
   className?: string
 }) {
+  const router = useRouter()
   const [state, formAction] = useActionState(action, initialState)
 
   useEffect(() => {
-    if (state.message) toast(state.message)
-  }, [state])
+    if (state.success && state.message)
+      toast(state.message, {
+        action: {
+          label: 'Go to Cart',
+          onClick: () => router.push('/cart'),
+        },
+      })
+    else if (!state.success && state.message)
+      toast(state.message, {
+        invert: true,
+      })
+  }, [router, state])
 
   return (
     <form action={formAction} className={cn(className)}>
