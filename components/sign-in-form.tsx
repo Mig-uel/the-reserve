@@ -56,7 +56,7 @@ export default function SignInForm() {
 
         {/* Submit Button */}
         <div>
-          <SubmitButton>Sign In</SubmitButton>
+          <SubmitButton className='w-full'>Sign In</SubmitButton>
         </div>
 
         {data && !data.success ? (

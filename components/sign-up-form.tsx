@@ -80,7 +80,7 @@ export default function SignUpForm() {
 
         {/* Submit Button */}
         <div>
-          <SubmitButton>Sign Up</SubmitButton>
+          <SubmitButton className='w-full'>Sign Up</SubmitButton>
         </div>
 
         {data && !data.success && data.message ? (
