@@ -2,6 +2,7 @@ import { PrismaAdapter } from '@auth/prisma-adapter'
 import { compareSync } from 'bcrypt-ts-edge'
 import NextAuth, { type NextAuthConfig } from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
+import { authConfig } from './auth.config'
 import { prisma } from './db/prisma'
 
 export const config: NextAuthConfig = {
@@ -11,7 +12,7 @@ export const config: NextAuthConfig = {
   },
 
   session: {
-    strategy: 'jwt',
+    strategy: 'jwt' as const,
     maxAge: 30 * 24 * 60 * 60,
   },
 
@@ -81,6 +82,8 @@ export const config: NextAuthConfig = {
 
       return token
     },
+
+    ...authConfig.callbacks,
   },
 }
 
