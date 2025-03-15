@@ -2,7 +2,7 @@
 
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { NUMBER_FORMATTER } from './constants'
+import { CURRENCY_FORMATTER, NUMBER_FORMATTER } from './constants'
 import { ZodError } from 'zod'
 
 export function cn(...inputs: ClassValue[]) {
@@ -67,4 +67,15 @@ export function roundNumber(value: number | string) {
   }
 
   throw new Error('Value is not a number or string')
+}
+
+/**
+ * Format Currency
+ */
+export function formatCurrency(amount: number | string | null) {
+  if (typeof amount === 'number') {
+    return CURRENCY_FORMATTER.format(amount)
+  } else if (typeof amount === 'string') {
+    return CURRENCY_FORMATTER.format(Number(amount))
+  } else return NaN
 }
