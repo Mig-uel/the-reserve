@@ -1,12 +1,13 @@
-import AddToCart from '@/components/shared/product/add-to-cart'
 import ProductImages from '@/components/shared/product/product-images'
 import ProductPrice from '@/components/shared/product/product-price'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
-import { getUserCart } from '@/lib/actions/cart.actions'
 import { getProductBySlug } from '@/lib/actions/product.actions'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
+import AddToCart from '../../../../components/shared/product/add-to-cart'
+import { MiniSpinner } from '@/components/shared/spinner'
 
 type Props = {
   params: Promise<{ slug: string }>
@@ -27,8 +28,6 @@ export default async function ProductDetailsPage({ params }: Props) {
   const product = await getProductBySlug(slug)
 
   if (!product) return notFound()
-
-  const cart = await getUserCart()
 
   return (
     <>
@@ -87,17 +86,18 @@ export default async function ProductDetailsPage({ params }: Props) {
 
                 {product.stock ? (
                   <div className='flex-center'>
-                    <AddToCart
-                      cart={cart}
-                      item={{
-                        image: product.images[0],
-                        name: product.name,
-                        price: product.price,
-                        productId: product.id,
-                        qty: 1,
-                        slug: product.slug,
-                      }}
-                    />
+                    <Suspense fallback={<MiniSpinner />}>
+                      <AddToCart
+                        item={{
+                          image: product.images[0],
+                          name: product.name,
+                          price: product.price,
+                          productId: product.id,
+                          qty: 1,
+                          slug: product.slug,
+                        }}
+                      />
+                    </Suspense>
                   </div>
                 ) : null}
               </CardContent>
