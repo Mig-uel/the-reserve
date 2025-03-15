@@ -1,3 +1,4 @@
+import FormContainer from '@/components/form-container'
 import { Button } from '@/components/ui/button'
 import {
   addItemToCart,
@@ -16,28 +17,30 @@ export default async function AddToCart({ item }: { item: CartItem }) {
   if (existingItem) {
     return (
       <>
-        <form action={removeItemFromCart.bind(null, existingItem.productId)}>
+        <FormContainer
+          action={removeItemFromCart.bind(null, existingItem.productId)}
+        >
           <Button type='submit' variant='outline'>
             <Minus className='h-4 w-4' />
           </Button>
-        </form>
+        </FormContainer>
 
         <span className='px-2'>{existingItem.qty}</span>
 
-        <form action={addItemToCart.bind(null, item)}>
+        <FormContainer action={addItemToCart.bind(null, item)}>
           <Button type='submit' variant='outline'>
             <Plus className='h-4 w-4' />
           </Button>
-        </form>
+        </FormContainer>
       </>
     )
   }
 
   return (
-    <form action={addItemToCart.bind(null, item)} className='w-full'>
+    <FormContainer action={addItemToCart.bind(null, item)} className='w-full'>
       <Button className='w-full' type='submit'>
         <Plus /> Add to Cart
       </Button>
-    </form>
+    </FormContainer>
   )
 }
