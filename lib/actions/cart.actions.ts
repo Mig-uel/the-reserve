@@ -6,21 +6,25 @@ import type { CartItem } from '@/zod'
 import { CartItemSchema, InsertCartSchema } from '@/zod/validators'
 import { revalidatePath } from 'next/cache'
 import { cookies } from 'next/headers'
-import { convertToPlainObject, roundNumber } from '../utils'
+import {
+  convertToPlainObject,
+  formatNumberWithDecimal,
+  roundNumber,
+} from '../utils'
 
 /**
  * Calculate Cart Prices
  */
 const calcPrice = (items: CartItem[]) => {
-  const itemsPrice = roundNumber(
+  const itemsPrice = formatNumberWithDecimal(
       items.reduce((acc, item) => acc + Number(item.price) * item.qty, 0)
     ),
-    shippingPrice = roundNumber(itemsPrice > 100 ? 0 : 10),
-    taxPrice = roundNumber(0.15 * itemsPrice),
+    shippingPrice = roundNumber(+itemsPrice > 100 ? 0 : 10),
+    taxPrice = roundNumber(0.15 * +itemsPrice),
     totalPrice = roundNumber(itemsPrice + taxPrice + shippingPrice)
 
   return {
-    itemsPrice: itemsPrice.toFixed(2),
+    itemsPrice: (+itemsPrice).toFixed(2),
     shippingPrice: shippingPrice.toFixed(2),
     taxPrice: taxPrice.toFixed(2),
     totalPrice: totalPrice.toFixed(2),
