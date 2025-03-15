@@ -49,8 +49,9 @@ export async function formatErrors(
 
     return `${field.charAt(0).toUpperCase() + field.slice(1)} already exists`
   } else {
-    return typeof error.message === 'string'
-      ? error.message
-      : JSON.stringify(error.message)
+    // return typeof error.message === 'string'
+    //   ? error.message
+    //   : JSON.stringify(error.message)
+    return 'Something went wrong. Please try again later'
   }
 }
