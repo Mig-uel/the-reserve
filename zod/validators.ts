@@ -1,15 +1,17 @@
 import { formatNumberWithDecimal } from '@/lib/utils'
 import { z } from 'zod'
 
-/**
- * Schema for Inserting Products
- */
 const currency = z
   .string()
   .refine(
     (val) => /^\d+(\.\d{2})?$/.test(formatNumberWithDecimal(+val)),
     'Price must have exactly two decimal places'
   )
+
+/**
+ * Schema for Inserting Products
+ */
+
 export const InsertProductSchema = z.object({
   name: z.string().min(3, 'Name must be at least 3 characters'),
 
@@ -56,3 +58,28 @@ export const SignUpFormSchema = z
     message: 'Passwords do not match',
     path: ['confirmPassword'],
   })
+
+/**
+ * Schema for CartItem
+ */
+export const CartItemSchema = z.object({
+  productId: z.string().min(1, 'Product is required'),
+  name: z.string().min(1, 'Name is required'),
+  slug: z.string().min(1, 'Slug is required'),
+  qty: z.number().int().nonnegative('Quantity must be a positive number'),
+  image: z.string().min(1, 'Image is required'),
+  price: currency,
+})
+
+/**
+ * Schema for Inserting Cart
+ */
+export const InsertCartSchema = z.object({
+  items: z.array(CartItemSchema),
+  itemsPrice: currency,
+  totalPrice: currency,
+  shippingPrice: currency,
+  taxPrice: currency,
+  sessionCartId: z.string().min(1, 'Session cart ID is required'),
+  userId: z.string().optional().nullable(),
+})
