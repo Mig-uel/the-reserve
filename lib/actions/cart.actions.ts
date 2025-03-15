@@ -33,6 +33,8 @@ const calcPrice = (items: CartItem[]) => {
 export async function addItemToCart(
   data: CartItem,
   // eslint-disable-next-line
+  prevState: any,
+  // eslint-disable-next-line
   formData: FormData
 ) {
   try {
@@ -77,10 +79,10 @@ export async function addItemToCart(
       // revalidate product page
       revalidatePath(`/product/${product.slug}`)
 
-      // return {
-      //   message: `${product.name} added to cart`,
-      //   success: true,
-      // }
+      return {
+        message: `${product.name} added to cart`,
+        success: true,
+      }
     } else {
       // if cart exists
 
@@ -123,12 +125,12 @@ export async function addItemToCart(
 
       revalidatePath(`/product/${product.slug}`)
 
-      // return {
-      //   message: `${product.name} ${
-      //     existingItem ? 'updated in' : 'added to'
-      //   } cart`,
-      //   success: true,
-      // }
+      return {
+        message: `${product.name} ${
+          existingItem ? 'updated in' : 'added to'
+        } cart`,
+        success: true,
+      }
     }
   } catch (error) {
     console.log(error)
@@ -137,6 +139,17 @@ export async function addItemToCart(
     //     message: formatErrors(error),
     //     success: false,
     //   }
+
+    if (error instanceof Error)
+      return {
+        message: error.message,
+        success: false,
+      }
+
+    return {
+      message: 'An unexpected error occurred.',
+      success: false,
+    }
   }
 }
 
@@ -177,6 +190,8 @@ export async function getUserCart() {
 export async function removeItemFromCart(
   productId: string,
   // eslint-disable-next-line
+  prevState: any,
+  // eslint-disable-next-line
   formData: FormData
 ) {
   try {
@@ -200,6 +215,7 @@ export async function removeItemFromCart(
 
     // check user cart for product
     const existingItem = cart.items.find((i) => i.productId === productId)
+    const isLastItem = existingItem?.qty === 1
 
     if (!existingItem) throw new Error('Item not in cart')
 
@@ -227,18 +243,24 @@ export async function removeItemFromCart(
 
     revalidatePath(`/product/${product.slug}`)
 
-    // return {
-    //   message: `${product.name} ${
-    //     isLastItem ? 'was removed from cart' : 'was updated in cart'
-    //   }`,
-    //   success: true,
-    // }
+    return {
+      message: `${product.name} ${
+        isLastItem ? 'was removed from cart' : 'was updated in cart'
+      }`,
+      success: true,
+    }
   } catch (error) {
     console.log(error)
-    // if (error instanceof Error)
-    //   return {
-    //     message: formatErrors(error),
-    //     success: false,
-    //   }
+    if (error instanceof Error)
+      return {
+        // message: formatErrors(error),
+        message: error.message,
+        success: false,
+      }
+
+    return {
+      message: 'An unexpected error occurred.',
+      success: false,
+    }
   }
 }
