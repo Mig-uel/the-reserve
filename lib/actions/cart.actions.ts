@@ -1,12 +1,12 @@
 'use server'
 
 import { auth } from '@/auth'
-import type { CartItem } from '@/zod'
-import { cookies } from 'next/headers'
-import { convertToPlainObject, formatErrors, roundNumber } from '../utils'
 import { prisma } from '@/db/prisma'
+import type { CartItem } from '@/zod'
 import { CartItemSchema, InsertCartSchema } from '@/zod/validators'
 import { revalidatePath } from 'next/cache'
+import { cookies } from 'next/headers'
+import { convertToPlainObject, formatErrors, roundNumber } from '../utils'
 
 /**
  * Calculate Cart Prices
@@ -185,4 +185,73 @@ export async function getUserCart() {
     shippingPrice: cart.shippingPrice.toString(),
     taxPrice: cart.taxPrice.toString(),
   })
+}
+
+/**
+ * Remove Item From Cart
+ */
+export async function removeItemFromCart(productId: string) {
+  try {
+    // check for cart cookie
+    const sessionCartId = (await cookies()).get('sessionCartId')?.value
+
+    if (!sessionCartId) throw new Error('Cart session not found')
+
+    // get product from database
+    const product = await prisma.product.findFirst({
+      where: {
+        id: productId,
+      },
+    })
+
+    if (!product) throw new Error('Product not found')
+
+    const cart = await getUserCart()
+
+    if (!cart) throw new Error('Cart not found')
+
+    // check user cart for product
+    const existingItem = cart.items.find((i) => i.productId === productId)
+    let isLastItem = false
+
+    if (!existingItem) throw new Error('Item not in cart')
+
+    // check qty of item
+    if (existingItem.qty == 1) {
+      isLastItem = true
+      // remove from cart
+      cart.items = cart.items.filter(
+        (i) => i.productId !== existingItem.productId
+      )
+    } else {
+      // decrease qty
+      existingItem.qty--
+    }
+
+    // update cart in database
+    await prisma.cart.update({
+      where: {
+        id: cart.id,
+      },
+      data: {
+        items: cart.items,
+        ...calcPrice(cart.items),
+      },
+    })
+
+    revalidatePath(`/product/${product.slug}`)
+
+    return {
+      message: `${product.name} ${
+        isLastItem ? 'was removed from cart' : 'was updated in cart'
+      }`,
+      success: true,
+    }
+  } catch (error) {
+    if (error instanceof Error)
+      return {
+        message: formatErrors(error),
+        success: false,
+      }
+  }
 }
