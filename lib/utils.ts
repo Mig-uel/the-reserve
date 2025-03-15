@@ -55,3 +55,16 @@ export async function formatErrors(
     return 'Something went wrong. Please try again later'
   }
 }
+
+/**
+ * Round Number to 2 Decimal Places
+ */
+export function roundNumber(value: number | string) {
+  if (typeof value === 'number') {
+    return Math.round(((value + Number.EPSILON) * 100) / 100)
+  } else if (typeof value === 'string') {
+    return Math.round(((Number(value) + Number.EPSILON) * 100) / 100)
+  }
+
+  throw new Error('Value is not a number or string')
+}
