@@ -1,5 +1,7 @@
 'use client'
 
+// TODO: improve component to ssr
+
 import { Button } from '@/components/ui/button'
 import { addItemToCart, removeItemFromCart } from '@/lib/actions/cart.actions'
 import type { Cart, CartItem } from '@/zod'
