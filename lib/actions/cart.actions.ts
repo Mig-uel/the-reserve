@@ -56,6 +56,7 @@ export async function addItemToCart(data: CartItem) {
 
     if (!product) throw new Error('Product not found')
 
+    // if no cart exists
     if (!cart) {
       const newCart = InsertCartSchema.parse({
         userId,
@@ -69,11 +70,79 @@ export async function addItemToCart(data: CartItem) {
         data: newCart,
       })
 
+      // update product stock
+      // await prisma.product.update({
+      //   where: {
+      //     id: item.productId,
+      //   },
+      //   data: {
+      //     stock: product.stock - 1,
+      //   },
+      // })
+
       // revalidate product page
       revalidatePath(`/product/${product.slug}`)
 
       return {
-        message: 'Item added to cart',
+        message: `${product.name} added to cart`,
+        success: true,
+      }
+    } else {
+      // if cart exists
+
+      // check if item is already in cart
+      const existingItem = cart.items.find(
+        (i) => i.productId === item.productId
+      )
+
+      if (existingItem) {
+        // check stock
+        if (product.stock < existingItem.qty + 1) {
+          throw new Error('Not enough stock')
+        }
+
+        // increase qty
+        existingItem.qty++
+      } else {
+        // if item does not exist in cart
+
+        //check stock
+        if (product.stock < 1) {
+          throw new Error('Not enough stock')
+        }
+
+        // add item to the cart.items
+        cart.items.push(item)
+      }
+
+      // save to database
+      await prisma.cart.update({
+        where: {
+          id: cart.id,
+        },
+
+        data: {
+          items: cart.items,
+          ...calcPrice(cart.items as CartItem[]),
+        },
+      })
+
+      // update product stock
+      // await prisma.product.update({
+      //   where: {
+      //     id: item.productId,
+      //   },
+      //   data: {
+      //     stock: product.stock - 1,
+      //   },
+      // })
+
+      revalidatePath(`/product/${product.slug}`)
+
+      return {
+        message: `${product.name} ${
+          existingItem ? 'updated in' : 'added to'
+        } cart`,
         success: true,
       }
     }
