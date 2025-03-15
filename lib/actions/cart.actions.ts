@@ -6,7 +6,7 @@ import type { CartItem } from '@/zod'
 import { CartItemSchema, InsertCartSchema } from '@/zod/validators'
 import { revalidatePath } from 'next/cache'
 import { cookies } from 'next/headers'
-import { convertToPlainObject, formatErrors, roundNumber } from '../utils'
+import { convertToPlainObject, roundNumber } from '../utils'
 
 /**
  * Calculate Cart Prices
@@ -30,7 +30,11 @@ const calcPrice = (items: CartItem[]) => {
 /**
  * Add CartItem to Cart
  */
-export async function addItemToCart(data: CartItem) {
+export async function addItemToCart(
+  data: CartItem,
+  // eslint-disable-next-line
+  formData: FormData
+) {
   try {
     // check for cart cookie
     const sessionCartId = (await cookies()).get('sessionCartId')?.value
@@ -70,23 +74,13 @@ export async function addItemToCart(data: CartItem) {
         data: newCart,
       })
 
-      // update product stock
-      // await prisma.product.update({
-      //   where: {
-      //     id: item.productId,
-      //   },
-      //   data: {
-      //     stock: product.stock - 1,
-      //   },
-      // })
-
       // revalidate product page
       revalidatePath(`/product/${product.slug}`)
 
-      return {
-        message: `${product.name} added to cart`,
-        success: true,
-      }
+      // return {
+      //   message: `${product.name} added to cart`,
+      //   success: true,
+      // }
     } else {
       // if cart exists
 
@@ -127,32 +121,22 @@ export async function addItemToCart(data: CartItem) {
         },
       })
 
-      // update product stock
-      // await prisma.product.update({
-      //   where: {
-      //     id: item.productId,
-      //   },
-      //   data: {
-      //     stock: product.stock - 1,
-      //   },
-      // })
-
       revalidatePath(`/product/${product.slug}`)
 
-      return {
-        message: `${product.name} ${
-          existingItem ? 'updated in' : 'added to'
-        } cart`,
-        success: true,
-      }
+      // return {
+      //   message: `${product.name} ${
+      //     existingItem ? 'updated in' : 'added to'
+      //   } cart`,
+      //   success: true,
+      // }
     }
   } catch (error) {
     console.log(error)
-    if (error instanceof Error)
-      return {
-        message: formatErrors(error),
-        success: false,
-      }
+    // if (error instanceof Error)
+    //   return {
+    //     message: formatErrors(error),
+    //     success: false,
+    //   }
   }
 }
 
@@ -190,7 +174,11 @@ export async function getUserCart() {
 /**
  * Remove Item From Cart
  */
-export async function removeItemFromCart(productId: string) {
+export async function removeItemFromCart(
+  productId: string,
+  // eslint-disable-next-line
+  formData: FormData
+) {
   try {
     // check for cart cookie
     const sessionCartId = (await cookies()).get('sessionCartId')?.value
@@ -212,13 +200,11 @@ export async function removeItemFromCart(productId: string) {
 
     // check user cart for product
     const existingItem = cart.items.find((i) => i.productId === productId)
-    let isLastItem = false
 
     if (!existingItem) throw new Error('Item not in cart')
 
     // check qty of item
     if (existingItem.qty == 1) {
-      isLastItem = true
       // remove from cart
       cart.items = cart.items.filter(
         (i) => i.productId !== existingItem.productId
@@ -241,17 +227,18 @@ export async function removeItemFromCart(productId: string) {
 
     revalidatePath(`/product/${product.slug}`)
 
-    return {
-      message: `${product.name} ${
-        isLastItem ? 'was removed from cart' : 'was updated in cart'
-      }`,
-      success: true,
-    }
+    // return {
+    //   message: `${product.name} ${
+    //     isLastItem ? 'was removed from cart' : 'was updated in cart'
+    //   }`,
+    //   success: true,
+    // }
   } catch (error) {
-    if (error instanceof Error)
-      return {
-        message: formatErrors(error),
-        success: false,
-      }
+    console.log(error)
+    // if (error instanceof Error)
+    //   return {
+    //     message: formatErrors(error),
+    //     success: false,
+    //   }
   }
 }
