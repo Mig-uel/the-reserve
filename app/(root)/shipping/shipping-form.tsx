@@ -35,7 +35,7 @@ export default async function ShippingForm() {
           <div className='w-full'>
             <Label htmlFor='streetAddress'>Address</Label>
             <Input
-              name='text'
+              name='streetAddress'
               placeholder='123 Street Rd'
               defaultValue={address?.streetAddress || ''}
             />
