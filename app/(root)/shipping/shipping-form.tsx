@@ -1,20 +1,27 @@
+import { auth } from '@/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { getUserById, updateUserAddress } from '@/lib/actions/user.action'
 import type { ShippingAddress } from '@/zod'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 
-export default async function ShippingForm({
-  address,
-}: {
-  address: ShippingAddress
-}) {
+export default async function ShippingForm() {
+  const session = await auth()
+
+  if (!session || !session.user)
+    return redirect('/sign-in?callbackUrl=/shipping')
+
+  const userId = session.user.id as string
+
+  const user = await getUserById(userId)
+
+  const address = user.address as ShippingAddress
+
   return (
-    <div className='max-w-md mx-auto space-y-4'>
-      <h1 className='h2-bold mt-4'>Shipping</h1>
-      <p className='text-sm text-muted-foreground'>Please enter your address</p>
-
-      <form action='' className='space-y-4'>
+    <>
+      <form action={updateUserAddress} className='space-y-4'>
         <div className='flex flex-col  gap-5'>
           <div className='w-full'>
             <Label htmlFor='name'>Full Name</Label>
@@ -70,6 +77,6 @@ export default async function ShippingForm({
           </Button>
         </div>
       </form>
-    </div>
+    </>
   )
 }
