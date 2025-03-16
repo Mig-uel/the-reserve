@@ -149,7 +149,7 @@ export async function updateUserAddress(formData: FormData) {
       },
     })
 
-    return redirect('/')
+    return redirect('/payment')
   } catch (error) {
     console.log(error)
   }
