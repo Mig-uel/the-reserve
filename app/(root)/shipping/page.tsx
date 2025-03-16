@@ -1,10 +1,9 @@
-import { auth } from '@/auth'
+import { MiniSpinner } from '@/components/shared/spinner'
 import { getUserCart } from '@/lib/actions/cart.actions'
-import { getUserById } from '@/lib/actions/user.action'
 import { Metadata } from 'next'
 import { redirect } from 'next/navigation'
+import { Suspense } from 'react'
 import ShippingForm from './shipping-form'
-import type { ShippingAddress } from '@/zod'
 
 export const metadata: Metadata = {
   title: 'Shipping',
@@ -15,18 +14,14 @@ export default async function ShippingPage() {
 
   if (!cart || cart.items.length === 0) return redirect('/cart')
 
-  const session = await auth()
-
-  if (!session || !session.user)
-    return redirect('/sign-in?callbackUrl=/shipping')
-
-  const userId = session.user.id as string
-
-  const user = await getUserById(userId)
-
   return (
-    <>
-      <ShippingForm address={user.address as ShippingAddress} />
-    </>
+    <div className='max-w-md mx-auto space-y-4'>
+      <h1 className='h2-bold mt-4'>Shipping</h1>
+      <p className='text-sm text-muted-foreground'>Please enter your address</p>
+
+      <Suspense fallback={<MiniSpinner />}>
+        <ShippingForm />
+      </Suspense>
+    </div>
   )
 }
