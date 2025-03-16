@@ -2,12 +2,17 @@
 
 // TODO: simplify returns (return redirect instead of returning message on success)
 
-import { signIn, signOut } from '@/auth'
+import { auth, signIn, signOut } from '@/auth'
 import { prisma } from '@/db/prisma'
-import { SignInFormSchema, SignUpFormSchema } from '@/zod/validators'
+import {
+  ShippingAddressSchema,
+  SignInFormSchema,
+  SignUpFormSchema,
+} from '@/zod/validators'
 import { hashSync } from 'bcrypt-ts-edge'
 import { isRedirectError } from 'next/dist/client/components/redirect-error'
 import { formatErrors } from '../utils'
+import { redirect } from 'next/navigation'
 
 /**
  * Sign In User with Credentials
@@ -107,4 +112,45 @@ export async function getUserById(id: string) {
   if (!user) throw new Error('User not found')
 
   return user
+}
+
+// TODO: modify to return error messages instead of console logging
+/**
+ * Update User's Address
+ */
+export async function updateUserAddress(formData: FormData) {
+  try {
+    const session = await auth()
+
+    if (!session || !session.user) throw new Error('Must be signed in first')
+
+    const user = await prisma.user.findFirst({
+      where: {
+        id: session.user.id as string,
+      },
+    })
+
+    if (!user) throw new Error('User not found')
+
+    const address = ShippingAddressSchema.parse({
+      fullName: formData.get('fullName'),
+      streetAddress: formData.get('streetAddress'),
+      city: formData.get('city'),
+      postalCode: formData.get('postalCode'),
+      country: formData.get('country'),
+    })
+
+    await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        address,
+      },
+    })
+
+    return redirect('/')
+  } catch (error) {
+    console.log(error)
+  }
 }
