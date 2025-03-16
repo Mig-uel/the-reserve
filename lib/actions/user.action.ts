@@ -12,6 +12,8 @@ import {
 import { hashSync } from 'bcrypt-ts-edge'
 import { isRedirectError } from 'next/dist/client/components/redirect-error'
 import { formatErrors } from '../utils'
+
+import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 /**
@@ -148,6 +150,8 @@ export async function updateUserAddress(formData: FormData) {
         address,
       },
     })
+
+    revalidatePath('/shipping')
 
     return redirect('/payment')
   } catch (error) {
