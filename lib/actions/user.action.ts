@@ -155,6 +155,8 @@ export async function updateUserAddress(formData: FormData) {
 
     return redirect('/payment')
   } catch (error) {
+    if (isRedirectError(error)) throw error
+    
     console.log(error)
   }
 }
