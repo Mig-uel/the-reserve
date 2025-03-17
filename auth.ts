@@ -4,6 +4,7 @@ import NextAuth, { type NextAuthConfig } from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import { authConfig } from './auth.config'
 import { prisma } from './db/prisma'
+import { cookies } from 'next/headers'
 
 export const config: NextAuthConfig = {
   pages: {
@@ -74,10 +75,51 @@ export const config: NextAuthConfig = {
       return session
     },
 
-    async jwt({ token, user }) {
+    async jwt({ trigger, token, user }) {
       // assign user fields to the token
       if (user) {
+        token.id = user.id
         token.role = user.role
+
+        if (trigger === 'signIn' || trigger === 'signUp') {
+          const cookiesObject = await cookies()
+
+          // get the session cart id from the cookies
+          const sessionCartId = cookiesObject.get('sessionCartId')?.value
+
+          // if session cart id exists
+          if (sessionCartId !== user.id) {
+            // find the session cart in the database
+            const sessionCart = await prisma.cart.findFirst({
+              where: {
+                sessionCartId,
+              },
+            })
+
+            // if database does not return a session cart
+            if (!sessionCart) return token
+
+            // if database returns a session cart
+            if (sessionCart.userId !== user.id) {
+              // delete the old session cart
+              await prisma.cart.deleteMany({
+                where: {
+                  userId: user.id,
+                },
+              })
+
+              // assign new session cart to the user
+              await prisma.cart.update({
+                where: {
+                  id: sessionCart.id,
+                },
+                data: {
+                  userId: user.id,
+                },
+              })
+            }
+          }
+        }
       }
 
       return token
