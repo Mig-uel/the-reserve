@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default async function ShippingPage() {
   const cart = await getUserCart()
 
-  if (!cart || cart.items.length === 0) return redirect('/cart')
+  if (!cart || cart.items.length === 0) return redirect('/')
 
   return (
     <div className='max-w-md mx-auto space-y-4'>
