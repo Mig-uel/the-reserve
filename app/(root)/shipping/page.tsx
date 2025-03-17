@@ -4,6 +4,7 @@ import { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 import ShippingForm from './shipping-form'
+import CheckoutSteps from '@/components/shared/checkout-steps'
 
 export const metadata: Metadata = {
   title: 'Shipping',
@@ -19,6 +20,7 @@ export default async function ShippingPage() {
       <h1 className='h2-bold mt-4'>Shipping</h1>
       <p className='text-sm text-muted-foreground'>Please enter your address</p>
 
+      <CheckoutSteps current={1} />
       <Suspense fallback={<MiniSpinner />}>
         <ShippingForm />
       </Suspense>
