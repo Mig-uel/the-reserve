@@ -106,7 +106,7 @@ export const ShippingAddressSchema = z.object({
 /**
  * Schema for Payment Method
  */
-export const paymentMethodsSchema = z
+export const PaymentMethodsSchema = z
   .object({
     type: z.string().min(1, 'Payment method is required'),
   })
