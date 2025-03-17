@@ -1,3 +1,5 @@
+// TODO: separate the form into a separate client component for toasts and error handling
+
 import { auth } from '@/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
