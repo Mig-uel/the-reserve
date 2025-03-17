@@ -5,6 +5,7 @@
 import { auth, signIn, signOut } from '@/auth'
 import { prisma } from '@/db/prisma'
 import {
+  PaymentMethodsSchema,
   ShippingAddressSchema,
   SignInFormSchema,
   SignUpFormSchema,
@@ -156,7 +157,47 @@ export async function updateUserAddress(formData: FormData) {
     return redirect('/payment')
   } catch (error) {
     if (isRedirectError(error)) throw error
-    
+
+    console.log(error)
+  }
+}
+
+/**
+ * Update User's Payment Method
+ */
+export async function updateUserPaymentMethod(formData: FormData) {
+  try {
+    const session = await auth()
+
+    if (!session || !session.user) throw new Error('Must be signed in first')
+
+    const user = await prisma.user.findFirst({
+      where: {
+        id: session.user.id as string,
+      },
+    })
+
+    if (!user) throw new Error('User not found')
+
+    const paymentMethod = PaymentMethodsSchema.parse({
+      type: formData.get('type'),
+    })
+
+    await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        paymentMethod: paymentMethod.type,
+      },
+    })
+
+    revalidatePath('/payment')
+
+    return redirect('/place-order')
+  } catch (error) {
+    if (isRedirectError(error)) throw error
+
     console.log(error)
   }
 }
