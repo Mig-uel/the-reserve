@@ -1,7 +1,6 @@
 import FormContainer from '@/components/form-container'
 import SubmitButton from '@/components/submit-button'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
 import {
   Table,
   TableBody,
@@ -16,11 +15,16 @@ import {
   removeItemFromCart,
 } from '@/lib/actions/cart.actions'
 import { formatCurrency } from '@/lib/utils'
-import { ArrowRight, Minus, Plus } from 'lucide-react'
+import { Minus, Plus } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import CartSubtotal from './cart-subtotal'
 
-export default async function CartTable() {
+export default async function CartTable({
+  finalScreen,
+}: {
+  finalScreen?: boolean
+}) {
   const cart = await getUserCart()
 
   if (!cart?.items.length)
@@ -91,23 +95,7 @@ export default async function CartTable() {
           </Table>
         </div>
 
-        <Card>
-          <CardContent className='p-4 gap-4'>
-            <div className='pb-3 text-xl'>
-              Subtotal ({cart.items.reduce((a, c) => a + c.qty, 0)}):{' '}
-              <span className='font-bold'>
-                {formatCurrency(cart.itemsPrice)}
-              </span>
-            </div>
-
-            <Button asChild className='w-full'>
-              <Link href='/shipping'>
-                <ArrowRight className='w-4 h-4' />
-                Proceed to Checkout
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
+        {!finalScreen ? <CartSubtotal cart={cart} /> : null}
       </div>
     </>
   )
