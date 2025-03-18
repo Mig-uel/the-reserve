@@ -72,7 +72,9 @@ export default async function CartTable({
                   </Link>
                 </TableCell>
 
-                <TableCell className='flex-center gap-2'>
+                <TableCell
+                  className={!finalScreen ? 'flex-center gap-2' : 'text-center'}
+                >
                   {
                     // If it's the final screen, don't show the remove button
                     !finalScreen ? (
