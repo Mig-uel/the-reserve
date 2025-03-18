@@ -1,3 +1,5 @@
+// TODO: prevent unauthorized user access to this page; if user does not own this order, redirect to 404 page
+
 import CartSubtotal from '@/components/shared/cart/cart-subtotal'
 import CartTable from '@/components/shared/cart/cart-table'
 import { Badge } from '@/components/ui/badge'
