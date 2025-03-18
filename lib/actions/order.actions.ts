@@ -4,12 +4,12 @@
 import { auth } from '@/auth'
 import { prisma } from '@/db/prisma'
 import { InsertOrderSchema } from '@/zod/validators'
+import { revalidatePath } from 'next/cache'
 import { isRedirectError } from 'next/dist/client/components/redirect-error'
 import { notFound, redirect } from 'next/navigation'
+import { convertToPlainObject } from '../utils'
 import { getUserCart } from './cart.actions'
 import { getUserById } from './user.action'
-import { revalidatePath } from 'next/cache'
-import { convertToPlainObject } from '../utils'
 
 /**
  * Create Order Item and Order
@@ -105,6 +105,7 @@ export async function getOrderById(id: string) {
 
     return convertToPlainObject(data)
   } catch (error) {
+    console.log(error)
     return notFound()
   }
 }
