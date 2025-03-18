@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function PaymentPage() {
   return (
-    <>
+    <div className='max-w-md mx-auto space-y-4'>
       <h2 className='h2-bold mt-4'>Payment Method</h2>
       <p className='text-sm text-muted-foreground'>
         Please select your payment method
@@ -21,6 +21,6 @@ export default function PaymentPage() {
       <Suspense fallback={<MiniSpinner />}>
         <PaymentForm />
       </Suspense>
-    </>
+    </div>
   )
 }
