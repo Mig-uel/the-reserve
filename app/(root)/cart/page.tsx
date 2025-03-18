@@ -8,6 +8,8 @@ export const metadata: Metadata = {
 export default function CartPage() {
   return (
     <div>
+      <h1 className='py-4 h2-bold'>Your Cart</h1>
+
       <CartTable />
     </div>
   )
