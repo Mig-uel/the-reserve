@@ -40,6 +40,23 @@ export const paypal = {
 
     return handleResponse(res)
   },
+
+  async captureOrder(orderId: string) {
+    const accessToken = await generateAccessToken()
+    const url = base + `/v2/checkout/orders/${orderId}/capture`
+
+    const headers = new Headers({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+    })
+
+    const res = await fetch(url, {
+      method: 'POST',
+      headers,
+    })
+
+    return handleResponse(res)
+  },
 }
 
 // generate access token
