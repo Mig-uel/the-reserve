@@ -54,12 +54,14 @@ export default function CartSubtotal({
           <div>{formatCurrency(cart.totalPrice)}</div>
         </div>
 
-        <Button asChild className='w-full'>
-          <Link href='/shipping'>
-            <ArrowRight className='w-4 h-4' />
-            Proceed to Checkout
-          </Link>
-        </Button>
+        {!finalScreen ? (
+          <Button asChild className='w-full'>
+            <Link href='/shipping'>
+              <ArrowRight className='w-4 h-4' />
+              Proceed to Checkout
+            </Link>
+          </Button>
+        ) : null}
       </CardContent>
     </Card>
   )
