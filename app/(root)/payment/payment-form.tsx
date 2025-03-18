@@ -4,6 +4,7 @@ import { auth } from '@/auth'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { getUserCart } from '@/lib/actions/cart.actions'
 import { getUserById, updateUserPaymentMethod } from '@/lib/actions/user.action'
 import { PAYMENT_METHODS } from '@/lib/constants'
 import Link from 'next/link'
@@ -11,12 +12,16 @@ import { redirect } from 'next/navigation'
 
 export default async function PaymentForm() {
   const session = await auth()
-  if (!session) return redirect('/signin?callbackUrl=/payment')
+  if (!session || !session.user || !session.user.id)
+    return redirect('/signin?callbackUrl=/payment')
 
-  const userId = session?.user?.id
-  if (!userId) return redirect('/signin?callbackUrl=/payment')
+  const cart = await getUserCart()
+  if (!cart || !cart.items.length) return redirect('/')
+
+  const userId = session.user.id
 
   const user = await getUserById(userId)
+  if (!user) return redirect('/')
 
   return (
     <>
