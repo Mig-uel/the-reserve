@@ -1,34 +1,34 @@
 const base = process.env.PAYPAL_API || 'https://api-m.sandbox.paypal.com'
 
-export const paypal = {
-  // generate access token
-  async generateAccessToken() {
-    const { PAYPAL_CLIENT_ID, PAYPAL_SECRET } = process.env
+export const paypal = {}
 
-    const auth = Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_SECRET}`).toString(
-      'base64'
-    )
+// generate access token
+export async function generateAccessToken() {
+  const { PAYPAL_CLIENT_ID, PAYPAL_SECRET } = process.env
 
-    // create headers
-    const headers = new Headers({
-      'Content-Type': 'application/x-www-form-urlencoded',
-      Authorization: `Basic ${auth}`,
-    })
+  const auth = Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_SECRET}`).toString(
+    'base64'
+  )
 
-    const res = await fetch(base + '/v1/oauth2/token', {
-      method: 'POST',
-      body: 'grant_type=client_credentials',
-      headers,
-    })
+  // create headers
+  const headers = new Headers({
+    'Content-Type': 'application/x-www-form-urlencoded',
+    Authorization: `Basic ${auth}`,
+  })
 
-    if (!res.ok) {
-      const errorText = await res.text()
+  const res = await fetch(base + '/v1/oauth2/token', {
+    method: 'POST',
+    body: 'grant_type=client_credentials',
+    headers,
+  })
 
-      throw new Error(errorText)
-    }
+  if (!res.ok) {
+    const errorText = await res.text()
 
-    const data = await res.json()
+    throw new Error(errorText)
+  }
 
-    return data.access_token
-  },
+  const data = await res.json()
+
+  return data.access_token
 }
