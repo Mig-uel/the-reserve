@@ -89,6 +89,7 @@ export async function createOrder() {
  * Get Order by ID
  */
 export async function getOrderById(id: string) {
+  // TODO: send notFound to the user if they try to access an order that is not theirs
   try {
     const data = await prisma.order.findFirst({
       where: { id },
