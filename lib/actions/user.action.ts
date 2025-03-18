@@ -180,7 +180,7 @@ export async function updateUserPaymentMethod(formData: FormData) {
     if (!user) throw new Error('User not found')
 
     const paymentMethod = PaymentMethodsSchema.parse({
-      type: formData.get('type'),
+      type: formData.get('paymentMethod'),
     })
 
     await prisma.user.update({
