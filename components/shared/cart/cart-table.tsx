@@ -15,11 +15,11 @@ import {
   removeItemFromCart,
 } from '@/lib/actions/cart.actions'
 import { formatCurrency } from '@/lib/utils'
+import type { Cart } from '@/zod'
 import { Minus, Plus } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import CartSubtotal from './cart-subtotal'
-import type { Cart } from '@/zod'
 
 export default async function CartTable({
   cart,
