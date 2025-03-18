@@ -27,12 +27,11 @@ export default async function CartTable() {
     return (
       <>
         <h1 className='py-4 h2-bold'>Your Cart</h1>
-        <div>
-          Your cart is empty.{' '}
-          <Button variant='link' className='p-0 pl-1'>
-            <Link href='/'>Go Shopping</Link>
-          </Button>
-        </div>
+        <div>Your cart is empty.</div>
+
+        <Button variant='default' className='mt-4'>
+          <Link href='/'>Go Shopping</Link>
+        </Button>
       </>
     )
 
