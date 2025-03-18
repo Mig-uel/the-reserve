@@ -32,14 +32,13 @@ export default async function CartTable({
 
   if (!cart?.items.length)
     return (
-      <>
-        <h1 className='py-4 h2-bold'>Your Cart</h1>
+      <div>
         <div>Your cart is empty.</div>
 
         <Button variant='default' className='mt-4'>
           <Link href='/'>Go Shopping</Link>
         </Button>
-      </>
+      </div>
     )
 
   return (
