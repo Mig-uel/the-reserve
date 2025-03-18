@@ -13,7 +13,7 @@ import { revalidatePath } from 'next/cache'
 /**
  * Create Order Item and Order
  */
-export async function createOrder(formData: FormData) {
+export async function createOrder() {
   try {
     const session = await auth()
     if (!session || !session.user || !session.user.id)
