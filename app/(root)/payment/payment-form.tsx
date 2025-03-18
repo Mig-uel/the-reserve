@@ -22,6 +22,7 @@ export default async function PaymentForm() {
 
   const user = await getUserById(userId)
   if (!user) return redirect('/')
+  if (!user.address) return redirect('/shipping')
 
   return (
     <>
