@@ -5,7 +5,7 @@ import { auth } from '@/auth'
 import { prisma } from '@/db/prisma'
 import { InsertOrderSchema } from '@/zod/validators'
 import { isRedirectError } from 'next/dist/client/components/redirect-error'
-import { redirect } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { getUserCart } from './cart.actions'
 import { getUserById } from './user.action'
 import { revalidatePath } from 'next/cache'
@@ -89,18 +89,22 @@ export async function createOrder() {
  * Get Order by ID
  */
 export async function getOrderById(id: string) {
-  const data = await prisma.order.findUnique({
-    where: { id },
-    include: {
-      orderitems: true,
-      user: {
-        select: {
-          name: true,
-          email: true,
+  try {
+    const data = await prisma.order.findFirst({
+      where: { id },
+      include: {
+        orderitems: true,
+        user: {
+          select: {
+            name: true,
+            email: true,
+          },
         },
       },
-    },
-  })
+    })
 
-  return convertToPlainObject(data)
+    return convertToPlainObject(data)
+  } catch (error) {
+    return notFound()
+  }
 }
