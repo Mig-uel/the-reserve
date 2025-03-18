@@ -30,7 +30,7 @@ export default async function CartTable({
 }) {
   cart = cart ? cart : await getUserCart()
 
-  if (!cart?.items.length)
+  if (!cart || !cart.items || !cart.items.length)
     return (
       <div>
         <div>Your cart is empty.</div>
