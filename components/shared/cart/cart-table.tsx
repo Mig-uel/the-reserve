@@ -41,62 +41,75 @@ export default async function CartTable({
 
   return (
     <>
-      <div className='grid md:grid-cols-4 md:gap-5'>
-        <div className='overflow-x-auto md:col-span-3'>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Item</TableHead>
-                <TableHead className='text-center'>Quantity</TableHead>
-                <TableHead className='text-right'>Price</TableHead>
-              </TableRow>
-            </TableHeader>
+      <div className='overflow-x-auto md:col-span-3'>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Item</TableHead>
+              <TableHead className='text-center'>Quantity</TableHead>
+              <TableHead className='text-right'>Price</TableHead>
+            </TableRow>
+          </TableHeader>
 
-            <TableBody>
-              {cart.items.map((item) => (
-                <TableRow key={item.slug}>
-                  <TableCell>
-                    <Link
-                      href={`/product/${item.slug}`}
-                      className='flex items-center'
-                    >
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        width={50}
-                        height={50}
-                      />
-                      <span className='px-2'>{item.name}</span>
-                    </Link>
-                  </TableCell>
+          <TableBody>
+            {cart.items.map((item) => (
+              <TableRow key={item.slug}>
+                <TableCell>
+                  <Link
+                    href={`/product/${item.slug}`}
+                    className='flex items-center'
+                  >
+                    <Image
+                      src={item.image}
+                      alt={item.name}
+                      width={50}
+                      height={50}
+                    />
+                    <span className='px-2'>{item.name}</span>
+                  </Link>
+                </TableCell>
 
-                  <TableCell className='flex-center gap-2'>
-                    <FormContainer
-                      action={removeItemFromCart.bind(null, item.productId)}
-                    >
-                      <SubmitButton variant='outline'>
-                        <Minus className='h-4 w-4' />
-                      </SubmitButton>
-                    </FormContainer>
+                <TableCell className='flex-center gap-2'>
+                  {
+                    // If it's the final screen, don't show the remove button
+                    !finalScreen ? (
+                      <FormContainer
+                        action={removeItemFromCart.bind(null, item.productId)}
+                      >
+                        <SubmitButton variant='outline'>
+                          <Minus className='h-4 w-4' />
+                        </SubmitButton>
+                      </FormContainer>
+                    ) : null
+                  }
+
+                  {!finalScreen ? (
                     <span>{item.qty}</span>
-                    <FormContainer action={addItemToCart.bind(null, item)}>
-                      <SubmitButton variant='outline'>
-                        <Plus className='h-4 w-4' />
-                      </SubmitButton>
-                    </FormContainer>
-                  </TableCell>
+                  ) : (
+                    <span className='px-2'>{item.qty}</span>
+                  )}
 
-                  <TableCell className='text-right'>
-                    {formatCurrency(+item.price * item.qty)}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+                  {
+                    // If it's the final screen, don't show the add button
+                    !finalScreen ? (
+                      <FormContainer action={addItemToCart.bind(null, item)}>
+                        <SubmitButton variant='outline'>
+                          <Plus className='h-4 w-4' />
+                        </SubmitButton>
+                      </FormContainer>
+                    ) : null
+                  }
+                </TableCell>
 
-        {!finalScreen ? <CartSubtotal cart={cart} /> : null}
+                <TableCell className='text-right'>
+                  {formatCurrency(+item.price * item.qty)}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
+      {!finalScreen ? <CartSubtotal cart={cart} /> : null}
     </>
   )
 }
