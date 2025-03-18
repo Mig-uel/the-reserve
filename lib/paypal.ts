@@ -1,6 +1,46 @@
 const base = process.env.PAYPAL_API || 'https://api-m.sandbox.paypal.com'
 
-export const paypal = {}
+async function handleResponse(res: Response) {
+  if (!res.ok) {
+    const errorText = await res.text()
+
+    throw new Error(errorText)
+  }
+
+  return res.json()
+}
+
+export const paypal = {
+  async createOrder(price: number) {
+    const accessToken = await generateAccessToken()
+    const url = base + '/v2/checkout/orders'
+
+    const headers = new Headers({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+    })
+
+    const body = JSON.stringify({
+      intent: 'CAPTURE',
+      purchase_units: [
+        {
+          amount: {
+            currency_code: 'USD',
+            value: price,
+          },
+        },
+      ],
+    })
+
+    const res = await fetch(url, {
+      method: 'POST',
+      headers,
+      body,
+    })
+
+    return handleResponse(res)
+  },
+}
 
 // generate access token
 export async function generateAccessToken() {
@@ -22,13 +62,7 @@ export async function generateAccessToken() {
     headers,
   })
 
-  if (!res.ok) {
-    const errorText = await res.text()
-
-    throw new Error(errorText)
-  }
-
-  const data = await res.json()
+  const data = await handleResponse(res)
 
   return data.access_token
 }
