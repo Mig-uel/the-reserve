@@ -19,9 +19,9 @@ const calcPrice = (items: CartItem[]) => {
   const itemsPrice = formatNumberWithDecimal(
       items.reduce((acc, item) => acc + Number(item.price) * item.qty, 0)
     ),
-    shippingPrice = roundNumber(+itemsPrice > 100 ? 0 : 10),
-    taxPrice = roundNumber(0.15 * +itemsPrice),
-    totalPrice = roundNumber(itemsPrice + taxPrice + shippingPrice)
+    shippingPrice = roundNumber(Number(itemsPrice) > 100 ? 0 : 10),
+    taxPrice = roundNumber(0.15 * Number(itemsPrice)),
+    totalPrice = roundNumber(Number(itemsPrice) + taxPrice + shippingPrice)
 
   return {
     itemsPrice: (+itemsPrice).toFixed(2),
