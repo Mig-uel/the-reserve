@@ -9,6 +9,7 @@ import { redirect } from 'next/navigation'
 import { getUserCart } from './cart.actions'
 import { getUserById } from './user.action'
 import { revalidatePath } from 'next/cache'
+import { convertToPlainObject } from '../utils'
 
 /**
  * Create Order Item and Order
@@ -82,4 +83,24 @@ export async function createOrder() {
 
     console.log(error)
   }
+}
+
+/**
+ * Get Order by ID
+ */
+export async function getOrderById(id: string) {
+  const data = await prisma.order.findUnique({
+    where: { id },
+    include: {
+      orderitems: true,
+      user: {
+        select: {
+          name: true,
+          email: true,
+        },
+      },
+    },
+  })
+
+  return convertToPlainObject(data)
 }
