@@ -1,6 +1,7 @@
-import { getOrderById } from '@/lib/actions/order.actions'
+import { MiniSpinner } from '@/components/shared/spinner'
 import { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
+import OrderDetailsTable from './order-details-table'
 
 type Props = {
   params: Promise<{ orderId: string }>
@@ -10,12 +11,12 @@ export const metadata: Metadata = {
   title: 'Order Details',
 }
 
-export default async function OrderDetailsPage({ params }: Props) {
-  const { orderId } = await params
-
-  const order = await getOrderById(orderId)
-
-  if (!order) return notFound()
-
-  return <div>OrderDetailsPage</div>
+export default function OrderDetailsPage({ params }: Props) {
+  return (
+    <>
+      <Suspense fallback={<MiniSpinner />}>
+        <OrderDetailsTable params={params} />
+      </Suspense>
+    </>
+  )
 }
