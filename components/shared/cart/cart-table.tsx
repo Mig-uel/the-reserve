@@ -19,13 +19,16 @@ import { Minus, Plus } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import CartSubtotal from './cart-subtotal'
+import type { Cart } from '@/zod'
 
 export default async function CartTable({
+  cart,
   finalScreen,
 }: {
+  cart?: Cart
   finalScreen?: boolean
 }) {
-  const cart = await getUserCart()
+  cart = cart ? cart : await getUserCart()
 
   if (!cart?.items.length)
     return (
