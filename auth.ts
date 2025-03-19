@@ -75,7 +75,7 @@ export const config: NextAuthConfig = {
       return session
     },
 
-    async jwt({ trigger, token, user }) {
+    async jwt({ trigger, token, user, session }) {
       // assign user fields to the token
       if (user) {
         token.id = user.id
@@ -120,6 +120,11 @@ export const config: NextAuthConfig = {
             }
           }
         }
+      }
+
+      // handle session updates
+      if (session?.user.name && trigger === 'update') {
+        token.name = session.user.name
       }
 
       return token
