@@ -242,8 +242,11 @@ export async function updateUserProfile(formData: FormData) {
       },
     })
 
-    revalidatePath('/user/profile')
+    // revalidatePath('/user/profile', 'layout')
+
+    return redirect('/user/profile')
   } catch (error) {
+    if (isRedirectError(error)) throw error
     console.log(error)
   }
 }
