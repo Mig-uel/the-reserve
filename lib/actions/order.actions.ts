@@ -196,8 +196,16 @@ export async function approvePaypalOrder(
     })
 
     revalidatePath(`/order/${orderId}`)
+
+    return {
+      success: true,
+      message: 'Order paid successfully',
+    }
   } catch (error) {
-    console.log(error)
+    return {
+      success: false,
+      message: (error as Error).message,
+    }
   }
 }
 
