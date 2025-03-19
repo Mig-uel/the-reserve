@@ -1,4 +1,5 @@
 import { auth } from '@/auth'
+import FormContainer from '@/components/shared/form/form-container'
 import SubmitButton from '@/components/submit-button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -11,7 +12,7 @@ export default async function UpdateProfileForm() {
   if (!session || !session.user) return redirect('/sign-in')
 
   return (
-    <form className='space-y-4' action={updateUserProfile}>
+    <FormContainer className='space-y-4' action={updateUserProfile}>
       <div className='flex flex-col gap-2'>
         <Label htmlFor='email'>Email</Label>
         <Input
@@ -33,6 +34,6 @@ export default async function UpdateProfileForm() {
       </div>
 
       <SubmitButton>Save Profile</SubmitButton>
-    </form>
+    </FormContainer>
   )
 }
