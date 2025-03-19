@@ -211,9 +211,12 @@ export async function updateUserPaymentMethod(formData: FormData) {
 
 /**
  * Update User's Profile
- * TODO: add toast messages
  */
-export async function updateUserProfile(formData: FormData) {
+export async function updateUserProfile(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  prevState: any,
+  formData: FormData
+) {
   try {
     const session = await auth()
 
@@ -248,11 +251,18 @@ export async function updateUserProfile(formData: FormData) {
       },
     })
 
-    // revalidatePath('/user/profile', 'layout')
+    revalidatePath('/user/profile')
 
-    return redirect('/user/profile')
+    return {
+      message: 'Profile updated successfully',
+      success: true,
+    }
   } catch (error) {
     if (isRedirectError(error)) throw error
-    console.log(error)
+
+    return {
+      message: await formatErrors(error as Error),
+      success: false,
+    }
   }
 }
