@@ -9,7 +9,7 @@ const links = [
   { title: 'Orders', href: '/user/orders' },
 ]
 
-export default function MainNav({
+export default function UserNav({
   className,
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
