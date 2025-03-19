@@ -12,6 +12,7 @@ import { convertToPlainObject } from '../utils'
 import { getUserCart } from './cart.actions'
 import { getUserById } from './user.action'
 import { PaymentResult } from '@/zod'
+import { PAGE_SIZE } from '../constants'
 
 /**
  * Create Order Item and Order
@@ -272,4 +273,43 @@ async function updateOrderToPaid({
   })
 
   if (!updatedOrder) throw new Error('Order not found')
+}
+
+/**
+ * Get Orders by User ID
+ * @param {userId}
+ * @returns {Promise<Order[]>}
+ */
+export async function getOrdersByUserId({
+  limit = PAGE_SIZE,
+  page,
+}: {
+  limit?: number
+  page: number
+}) {
+  const session = await auth()
+
+  if (!session || !session.user || !session.user.id)
+    throw new Error('Must be signed in to view orders')
+
+  const data = await prisma.order.findMany({
+    where: { userId: session.user.id },
+    include: {
+      orderitems: true,
+    },
+    take: limit,
+    skip: (page - 1) * limit,
+    orderBy: {
+      createdAt: 'desc',
+    },
+  })
+
+  const dataCount = await prisma.order.count({
+    where: { userId: session.user.id },
+  })
+
+  return {
+    data: convertToPlainObject(data),
+    totalPages: Math.ceil(dataCount / limit),
+  }
 }
