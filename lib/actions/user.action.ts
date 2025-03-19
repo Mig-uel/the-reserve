@@ -9,6 +9,7 @@ import {
   ShippingAddressSchema,
   SignInFormSchema,
   SignUpFormSchema,
+  UpdateUserProfileSchema,
 } from '@/zod/validators'
 import { hashSync } from 'bcrypt-ts-edge'
 import { isRedirectError } from 'next/dist/client/components/redirect-error'
@@ -208,6 +209,11 @@ export async function updateUserPaymentMethod(formData: FormData) {
  */
 export async function updateUserProfile(formData: FormData) {
   try {
+    const userObject = UpdateUserProfileSchema.parse({
+      name: formData.get('name'),
+      email: formData.get('email'),
+    })
+
     const session = await auth()
 
     if (!session || !session.user) throw new Error('Must be signed in first')
@@ -225,7 +231,7 @@ export async function updateUserProfile(formData: FormData) {
         id: user.id,
       },
       data: {
-        name: formData.get('name') as string,
+        name: userObject.name,
         // email: formData.get('email') as string,
       },
     })
