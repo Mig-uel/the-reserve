@@ -201,3 +201,37 @@ export async function updateUserPaymentMethod(formData: FormData) {
     console.log(error)
   }
 }
+
+/**
+ * Update User's Profile
+ * TODO: add toast messages
+ */
+export async function updateUserProfile(formData: FormData) {
+  try {
+    const session = await auth()
+
+    if (!session || !session.user) throw new Error('Must be signed in first')
+
+    const user = await prisma.user.findFirst({
+      where: {
+        id: session.user.id,
+      },
+    })
+
+    if (!user) throw new Error('User not found')
+
+    await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        name: formData.get('name') as string,
+        // email: formData.get('email') as string,
+      },
+    })
+
+    revalidatePath('/user/profile')
+  } catch (error) {
+    console.log(error)
+  }
+}
