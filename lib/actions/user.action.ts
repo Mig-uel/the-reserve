@@ -2,7 +2,7 @@
 
 // TODO: simplify returns (return redirect instead of returning message on success)
 
-import { auth, signIn, signOut } from '@/auth'
+import { auth, signIn, signOut, update } from '@/auth'
 import { prisma } from '@/db/prisma'
 import {
   PaymentMethodsSchema,
@@ -209,14 +209,14 @@ export async function updateUserPaymentMethod(formData: FormData) {
  */
 export async function updateUserProfile(formData: FormData) {
   try {
-    const userObject = UpdateUserProfileSchema.parse({
-      name: formData.get('name'),
-      email: formData.get('email'),
-    })
-
     const session = await auth()
 
     if (!session || !session.user) throw new Error('Must be signed in first')
+
+    const userObject = UpdateUserProfileSchema.parse({
+      name: formData.get('name'),
+      email: session.user.email,
+    })
 
     const user = await prisma.user.findFirst({
       where: {
@@ -233,6 +233,12 @@ export async function updateUserProfile(formData: FormData) {
       data: {
         name: userObject.name,
         // email: formData.get('email') as string,
+      },
+    })
+
+    await update({
+      user: {
+        name: userObject.name,
       },
     })
 
