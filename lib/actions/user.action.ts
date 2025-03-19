@@ -118,11 +118,14 @@ export async function getUserById(id: string) {
   return user
 }
 
-// TODO: modify to return error messages instead of console logging
 /**
  * Update User's Address
  */
-export async function updateUserAddress(formData: FormData) {
+export async function updateUserAddress(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  prevState: any,
+  formData: FormData
+) {
   try {
     const session = await auth()
 
@@ -159,7 +162,10 @@ export async function updateUserAddress(formData: FormData) {
   } catch (error) {
     if (isRedirectError(error)) throw error
 
-    console.log(error)
+    return {
+      message: await formatErrors(error as Error),
+      success: false,
+    }
   }
 }
 
