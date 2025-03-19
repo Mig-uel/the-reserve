@@ -1,5 +1,3 @@
-// TODO: separate the form into a separate client component for toasts and error handling
-
 import { auth } from '@/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -8,6 +6,7 @@ import { getUserById, updateUserAddress } from '@/lib/actions/user.action'
 import type { ShippingAddress } from '@/zod'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import FormContainer from '../../../components/shared/form/form-container'
 
 export default async function ShippingForm() {
   const session = await auth()
@@ -23,7 +22,7 @@ export default async function ShippingForm() {
 
   return (
     <>
-      <form action={updateUserAddress} className='space-y-4'>
+      <FormContainer action={updateUserAddress} className='space-y-4'>
         <div className='flex flex-col  gap-5'>
           <div className='w-full'>
             <Label htmlFor='name'>Full Name</Label>
@@ -78,7 +77,7 @@ export default async function ShippingForm() {
             <Link href='/cart'>Cancel</Link>
           </Button>
         </div>
-      </form>
+      </FormContainer>
     </>
   )
 }
