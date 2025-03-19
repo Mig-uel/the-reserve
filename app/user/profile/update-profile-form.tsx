@@ -8,10 +8,7 @@ import { redirect } from 'next/navigation'
 export default async function UpdateProfileForm() {
   const session = await auth()
 
-  if (!session || !session.user || !session.user.email)
-    return redirect('/login')
-
-  const { user } = session
+  if (!session || !session.user) return redirect('/sign-in')
 
   return (
     <form className='space-y-4' action={updateUserProfile}>
@@ -20,7 +17,7 @@ export default async function UpdateProfileForm() {
         <Input
           name='email'
           type='email'
-          defaultValue={user.email as string}
+          defaultValue={session.user.email as string}
           disabled
         />
       </div>
@@ -30,7 +27,7 @@ export default async function UpdateProfileForm() {
         <Input
           name='name'
           type='text'
-          defaultValue={user.name as string}
+          defaultValue={session.user.name as string}
           placeholder='Enter your name'
         />
       </div>
