@@ -8,6 +8,7 @@ import { getOrderById } from '@/lib/actions/order.actions'
 import { formatDateTime, shortenUUID } from '@/lib/utils'
 import { ShippingAddress } from '@/zod'
 import { notFound } from 'next/navigation'
+import PayPal from './paypal'
 
 type Props = {
   params: Promise<{ orderId: string }>
@@ -106,6 +107,28 @@ export default async function OrderDetailsTable({ params }: Props) {
               sessionCartId: '',
             }}
           />
+
+          {/* PayPal Payment */}
+          {!isPaid && paymentMethod === 'PayPal' ? (
+            <PayPal
+              order={{
+                id,
+                itemsPrice,
+                shippingPrice,
+                taxPrice,
+                totalPrice,
+                deliveredAt,
+                isDelivered,
+                isPaid,
+                paidAt,
+                paymentMethod,
+                shippingAddress,
+                user: order.user,
+                userId: order.userId,
+              }}
+              paypalClientId={process.env.PAYPAL_CLIENT_ID || 'sb'}
+            />
+          ) : null}
         </div>
       </div>
     </>
