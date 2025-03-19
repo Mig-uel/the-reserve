@@ -142,8 +142,17 @@ export async function createPaypalOrder(orderId: string) {
     })
 
     revalidatePath(`/order/${orderId}`)
+
+    return {
+      success: true,
+      message: 'Order created successfully',
+      data: paypalOrder.id,
+    }
   } catch (error) {
-    console.log(error)
+    return {
+      success: false,
+      message: (error as Error).message,
+    }
   }
 }
 
