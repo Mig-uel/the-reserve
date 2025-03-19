@@ -1,3 +1,4 @@
+import Pagination from '@/components/pagination'
 import { Button } from '@/components/ui/button'
 import {
   Table,
@@ -24,11 +25,11 @@ export const metadata: Metadata = {
 export default async function UserOrdersPage({ searchParams }: Props) {
   const { page } = await searchParams
 
-  const { data } = await getOrdersByUserId({
+  const order = await getOrdersByUserId({
     page: Number(page) || 1,
   })
 
-  if (!data.length)
+  if (!order.data.length)
     return (
       <div className='space-y-2'>
         <div className='h2-bold'>Your Orders</div>
@@ -53,7 +54,7 @@ export default async function UserOrdersPage({ searchParams }: Props) {
           </TableHeader>
 
           <TableBody>
-            {data.map((order) => (
+            {order.data.map((order) => (
               <TableRow key={order.id}>
                 <TableCell>{shortenUUID(order.id)}</TableCell>
                 <TableCell>
@@ -85,6 +86,10 @@ export default async function UserOrdersPage({ searchParams }: Props) {
             ))}
           </TableBody>
         </Table>
+
+        {order.totalPages > 1 ? (
+          <Pagination page={Number(page) || 1} totalPages={order.totalPages} />
+        ) : null}
       </div>
     </div>
   )
