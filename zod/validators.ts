@@ -142,3 +142,13 @@ export const InsertOrderItemSchema = z.object({
   price: currency,
   qty: z.number().int().nonnegative('Quantity must be a positive number'),
 })
+
+/**
+ * Schema for Payment Result
+ */
+export const PaymentResultSchema = z.object({
+  id: z.string(),
+  status: z.string(),
+  email_address: z.string(),
+  pricePaid: z.string(),
+})
