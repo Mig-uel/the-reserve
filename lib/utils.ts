@@ -1,4 +1,5 @@
-// TODO: improve error handling
+// TODO: improve error
+'server only'
 
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
@@ -122,7 +123,7 @@ export const formatDateTime = (dateString: Date) => {
     'en-US',
     timeOptions
   )
-  
+
   return {
     dateTime: formattedDateTime,
     dateOnly: formattedDate,
