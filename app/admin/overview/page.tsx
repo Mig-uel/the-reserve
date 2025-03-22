@@ -1,6 +1,5 @@
 // TODO: Separate stats into different components for streaming components
 
-import { auth } from '@/auth'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Table,
@@ -11,6 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { getOrdersSummary } from '@/lib/actions/order.actions'
+import { requireAdmin } from '@/lib/auth-guard'
 import { formatCurrency, formatDateTime, formatNumber } from '@/lib/utils'
 import { BadgeDollarSign, Barcode, CreditCardIcon, Users } from 'lucide-react'
 import type { Metadata } from 'next'
@@ -22,15 +22,7 @@ export const metadata: Metadata = {
 }
 
 export default async function AdminOverviewPage() {
-  const session = await auth()
-
-  if (
-    !session ||
-    !session.user ||
-    !session.user.role ||
-    session.user.role !== 'admin'
-  )
-    throw new Error('User is not authorized to view this page')
+  await requireAdmin()
 
   const summary = await getOrdersSummary()
 
