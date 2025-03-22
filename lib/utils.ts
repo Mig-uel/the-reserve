@@ -27,7 +27,7 @@ export function formatNumberWithDecimal(value: number) {
 /**
  * Format Errors
  */
-export async function formatErrors(
+export function formatErrors(
   error: Error & {
     code?: string
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
