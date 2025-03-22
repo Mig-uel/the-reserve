@@ -8,7 +8,7 @@ import { revalidatePath } from 'next/cache'
 import { isRedirectError } from 'next/dist/client/components/redirect-error'
 import { notFound, redirect } from 'next/navigation'
 import { paypal } from '../paypal'
-import { convertToPlainObject } from '../utils'
+import { convertToPlainObject, formatErrors } from '../utils'
 import { getUserCart } from './cart.actions'
 import { getUserById } from './user.action'
 import { PaymentResult } from '@/zod'
@@ -406,5 +406,28 @@ export async function getAllOrders({
   return {
     data: convertToPlainObject(data),
     totalPages: Math.ceil(dataCount / limit),
+  }
+}
+
+/**
+ * Delete Order
+ */
+export async function deleteOrder(orderId: string) {
+  try {
+    await prisma.order.delete({
+      where: { id: orderId },
+    })
+
+    revalidatePath('/admin/orders')
+
+    return {
+      success: true,
+      message: 'Order deleted successfully',
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: formatErrors(error as Error),
+    }
   }
 }
