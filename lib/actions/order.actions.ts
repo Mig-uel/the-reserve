@@ -435,3 +435,72 @@ export async function deleteOrder(
     }
   }
 }
+
+/**
+ * Mark Cash On Delivery Order to Paid
+ */
+export async function markOrderAsPaid(
+  orderId: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+  prevState: any,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  formData: FormData
+) {
+  try {
+    await updateOrderToPaid({
+      orderId,
+    })
+
+    revalidatePath('/order/' + orderId)
+
+    return {
+      success: true,
+      message: 'Order marked as paid successfully',
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: formatErrors(error as Error),
+    }
+  }
+}
+
+/**
+ * Mark Order as Delivered
+ */
+export async function markOrderAsDelivered(
+  orderId: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+  prevState: any,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  formData: FormData
+) {
+  try {
+    const order = await prisma.order.findFirst({
+      where: { id: orderId },
+    })
+
+    if (!order) throw new Error('Order not found')
+    if (!order.isPaid) throw new Error('Order not paid')
+
+    await prisma.order.update({
+      where: { id: orderId },
+      data: {
+        isDelivered: true,
+        deliveredAt: new Date(),
+      },
+    })
+
+    revalidatePath('/order/' + orderId)
+
+    return {
+      success: true,
+      message: 'Order marked as delivered successfully',
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: formatErrors(error as Error),
+    }
+  }
+}
