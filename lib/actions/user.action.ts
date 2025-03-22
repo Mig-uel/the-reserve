@@ -163,7 +163,7 @@ export async function updateUserAddress(
     if (isRedirectError(error)) throw error
 
     return {
-      message: await formatErrors(error as Error),
+      message: formatErrors(error as Error),
       success: false,
     }
   }
@@ -261,7 +261,7 @@ export async function updateUserProfile(
     if (isRedirectError(error)) throw error
 
     return {
-      message: await formatErrors(error as Error),
+      message: formatErrors(error as Error),
       success: false,
     }
   }
