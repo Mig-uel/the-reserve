@@ -1,4 +1,3 @@
-// TODO: Add chart to overview page
 // TODO: Separate stats into different components for streaming components
 
 import { auth } from '@/auth'
@@ -16,6 +15,7 @@ import { formatCurrency, formatDateTime, formatNumber } from '@/lib/utils'
 import { BadgeDollarSign, Barcode, CreditCardIcon, Users } from 'lucide-react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Charts from './charts'
 
 export const metadata: Metadata = {
   title: 'Admin Overview',
@@ -100,7 +100,13 @@ export default async function AdminOverviewPage() {
             <CardTitle>Overview</CardTitle>
           </CardHeader>
 
-          <CardContent>{/* TODO: CHART */}</CardContent>
+          <CardContent>
+            <Charts
+              data={{
+                salesData: summary.salesData,
+              }}
+            />
+          </CardContent>
         </Card>
 
         <Card className='col-span-3'>
