@@ -412,10 +412,14 @@ export async function getAllOrders({
 /**
  * Delete Order
  */
-export async function deleteOrder(orderId: string) {
+export async function deleteOrder(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  prevState: any,
+  formData: FormData
+) {
   try {
     await prisma.order.delete({
-      where: { id: orderId },
+      where: { id: formData.get('id') as string },
     })
 
     revalidatePath('/admin/orders')
