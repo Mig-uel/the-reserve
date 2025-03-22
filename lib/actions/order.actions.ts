@@ -370,3 +370,41 @@ export async function getOrdersSummary() {
     salesData,
   }
 }
+
+/**
+ * Get All Orders
+ * @access admin
+ */
+export async function getAllOrders({
+  limit = PAGE_SIZE,
+  page,
+}: {
+  limit?: number
+  page: number
+}) {
+  const data = await prisma.order.findMany({
+    orderBy: {
+      createdAt: 'desc',
+    },
+
+    take: limit,
+
+    skip: (page - 1) * limit,
+
+    include: {
+      user: {
+        select: {
+          name: true,
+          id: true,
+        },
+      },
+    },
+  })
+
+  const dataCount = await prisma.order.count()
+
+  return {
+    data: convertToPlainObject(data),
+    totalPages: Math.ceil(dataCount / limit),
+  }
+}
