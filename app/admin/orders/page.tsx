@@ -1,4 +1,5 @@
 import Pagination from '@/components/pagination'
+import DeleteDialog from '@/components/shared/delete-dialog'
 import { Button } from '@/components/ui/button'
 import {
   Table,
@@ -8,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { getAllOrders } from '@/lib/actions/order.actions'
+import { deleteOrder, getAllOrders } from '@/lib/actions/order.actions'
 import { requireAdmin } from '@/lib/auth-guard'
 import { formatCurrency, formatDateTime, shortenUUID } from '@/lib/utils'
 import { Check, Ellipsis, X } from 'lucide-react'
@@ -76,7 +77,8 @@ export default async function AdminOrdersPage({ searchParams }: Props) {
                       <Ellipsis className='w-4 h-4' />
                     </Link>
                   </Button>
-                  {/* TODO: add delete order button */}
+
+                  <DeleteDialog id={order.id} action={deleteOrder} />
                 </TableCell>
               </TableRow>
             ))}
