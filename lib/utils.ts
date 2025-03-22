@@ -82,6 +82,14 @@ export function formatCurrency(amount: number | string | null) {
 }
 
 /**
+ * Format Number
+ */
+const NUMBER_FORMATTER_2 = new Intl.NumberFormat('en-US')
+export function formatNumber(number: number) {
+  return NUMBER_FORMATTER_2.format(number)
+}
+
+/**
  * Shorten UUID
  */
 export function shortenUUID(uuid: string) {
