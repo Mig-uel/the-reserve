@@ -4,17 +4,28 @@ import CartSubtotal from '@/components/shared/cart/cart-subtotal'
 import CartTable from '@/components/shared/cart/cart-table'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
-import { getOrderById } from '@/lib/actions/order.actions'
+import {
+  getOrderById,
+  markOrderAsDelivered,
+  markOrderAsPaid,
+} from '@/lib/actions/order.actions'
 import { formatDateTime, shortenUUID } from '@/lib/utils'
 import { ShippingAddress } from '@/zod'
 import { notFound } from 'next/navigation'
 import PayPal from './paypal'
+import { auth } from '@/auth'
+import FormContainer from '@/components/shared/form/form-container'
+import SubmitButton from '@/components/submit-button'
 
 type Props = {
   params: Promise<{ orderId: string }>
 }
 
 export default async function OrderDetailsTable({ params }: Props) {
+  const session = await auth()
+
+  const isAdmin = session?.user?.role === 'admin'
+
   const { orderId } = await params
 
   const order = await getOrderById(orderId)
@@ -128,6 +139,34 @@ export default async function OrderDetailsTable({ params }: Props) {
               }}
               paypalClientId={process.env.PAYPAL_CLIENT_ID || 'sb'}
             />
+          ) : null}
+
+          {/* Admin Actions */}
+          {isAdmin && !isPaid && paymentMethod === 'CashOnDelivery' ? (
+            <div className='mt-4 w-full'>
+              <FormContainer
+                action={markOrderAsPaid.bind(null, id)}
+                className='w-full'
+              >
+                <SubmitButton className='w-full'>
+                  Mark Order as Paid
+                </SubmitButton>
+              </FormContainer>
+            </div>
+          ) : null}
+
+          {/* Admin Actions */}
+          {isAdmin && isPaid && !isDelivered ? (
+            <div className='mt-4 w-full'>
+              <FormContainer
+                action={markOrderAsDelivered.bind(null, id)}
+                className='w-full'
+              >
+                <SubmitButton className='w-full'>
+                  Mark Order as Delivered
+                </SubmitButton>
+              </FormContainer>
+            </div>
           ) : null}
         </div>
       </div>
