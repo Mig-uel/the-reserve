@@ -335,15 +335,14 @@ export async function getOrdersSummary() {
   const salesDataRaw = await prisma.$queryRaw<
     Array<{ month: string; total: Prisma.Decimal }>
   >`
-    SELECT to_char("createdAt", 'MM/YY') as "month", SUM("totalPrice") as "totalSales"
+    SELECT to_char("createdAt", 'MM/YY') as "month", SUM("totalPrice") as "total"
     FROM "Order"
     GROUP BY "month"
     `
 
-  const salesData = salesDataRaw.map((entry) => ({
-    month: entry.month,
-    totalSales: Number(entry.total),
-  }))
+  const salesData = salesDataRaw.map((entry) => {
+    return { month: entry.month, totalSales: Number(entry.total) }
+  })
 
   // get latest sales
   const latestSales = await prisma.order.findMany({
