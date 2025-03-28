@@ -1,7 +1,9 @@
 'use server'
 import { prisma } from '@/db/prisma'
-import { convertToPlainObject } from '../utils'
+import { convertToPlainObject, formatErrors } from '../utils'
 import { LATEST_PRODUCTS_LIMIT, PAGE_SIZE } from '../constants'
+import { auth } from '@/auth'
+import { revalidatePath } from 'next/cache'
 
 /**
  * Get Latest Products
@@ -53,5 +55,55 @@ export async function getAllProducts({
   return {
     products: convertToPlainObject(products),
     totalPages: Math.ceil(productsCount / limit),
+  }
+}
+
+/**
+ * Delete Product
+ * @access Admin
+ */
+export async function deleteProduct(
+  id: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+  prevState: any,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  formData: FormData
+) {
+  try {
+    const session = await auth()
+
+    // Check if the user is authenticated and has the admin role
+    if (!session || !session.user || session.user.role !== 'admin')
+      throw new Error('Unauthorized access')
+
+    const product = await prisma.product.findFirst({
+      where: {
+        id,
+      },
+    })
+
+    if (!product) throw new Error('Product not found')
+
+    // Delete the product
+    await prisma.product.delete({
+      where: {
+        id,
+      },
+    })
+
+    // Delete the product image if it exists
+    // TODO: Implement image deletion logic here
+
+    revalidatePath('/admin/products')
+
+    return {
+      success: true,
+      message: 'Product deleted successfully',
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: formatErrors(error as Error),
+    }
   }
 }
