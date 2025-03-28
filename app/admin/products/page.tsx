@@ -1,4 +1,6 @@
 import Pagination from '@/components/pagination'
+import FormContainer from '@/components/shared/form/form-container'
+import SubmitButton from '@/components/submit-button'
 import { Button } from '@/components/ui/button'
 import {
   Table,
@@ -8,9 +10,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { getAllProducts } from '@/lib/actions/product.actions'
+import { deleteProduct, getAllProducts } from '@/lib/actions/product.actions'
 import { formatCurrency, shortenUUID } from '@/lib/utils'
-import { Pen } from 'lucide-react'
+import { Pen, Trash } from 'lucide-react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
@@ -83,6 +85,11 @@ export default async function AdminProductsPage({ searchParams }: Props) {
                 </Button>
 
                 {/* TODO: add delete button */}
+                <FormContainer action={deleteProduct.bind(null, product.id)}>
+                  <SubmitButton variant='destructive'>
+                    <Trash className='w-4 h-4' />
+                  </SubmitButton>
+                </FormContainer>
               </TableCell>
             </TableRow>
           ))}
