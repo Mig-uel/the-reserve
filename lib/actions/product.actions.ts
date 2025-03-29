@@ -4,6 +4,7 @@ import { convertToPlainObject, formatErrors } from '../utils'
 import { LATEST_PRODUCTS_LIMIT, PAGE_SIZE } from '../constants'
 import { auth } from '@/auth'
 import { revalidatePath } from 'next/cache'
+import { InsertProductSchema, UpdateProductSchema } from '@/zod/validators'
 
 /**
  * Get Latest Products
@@ -99,6 +100,94 @@ export async function deleteProduct(
     return {
       success: true,
       message: 'Product deleted successfully',
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: formatErrors(error as Error),
+    }
+  }
+}
+
+/**
+ * Create Product
+ * @access Admin
+ */
+export async function createProduct(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+  prevState: any,
+  formData: FormData
+) {
+  try {
+    const product = InsertProductSchema.parse({
+      name: formData.get('name'),
+      slug: formData.get('slug'),
+      description: formData.get('description'),
+      price: Number(formData.get('price')),
+      stock: Number(formData.get('stock')),
+      categoryId: formData.get('categoryId'),
+      // image: formData.get('image'),
+    })
+
+    await prisma.product.create({
+      data: product,
+    })
+
+    revalidatePath('/admin/products')
+
+    return {
+      success: true,
+      message: 'Product created successfully',
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: formatErrors(error as Error),
+    }
+  }
+}
+
+/**
+ * Update Product
+ * @access Admin
+ */
+export async function updateProduct(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+  prevState: any,
+  formData: FormData
+) {
+  try {
+    const product = UpdateProductSchema.parse({
+      name: formData.get('name'),
+      slug: formData.get('slug'),
+      description: formData.get('description'),
+      price: Number(formData.get('price')),
+      stock: Number(formData.get('stock')),
+      categoryId: formData.get('categoryId'),
+      id: formData.get('id'),
+      // image: formData.get('image'),
+    })
+
+    const existingProduct = await prisma.product.findFirst({
+      where: {
+        id: product.id,
+      },
+    })
+
+    if (!existingProduct) throw new Error('Product not found')
+
+    await prisma.product.update({
+      where: {
+        id: product.id,
+      },
+      data: product,
+    })
+
+    revalidatePath('/admin/products')
+
+    return {
+      success: true,
+      message: 'Product updated successfully',
     }
   } catch (error) {
     return {
