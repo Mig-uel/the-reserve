@@ -10,11 +10,13 @@ export default function SubmitButton({
   type = 'submit',
   variant = 'default',
   children,
+  size = 'default',
 }: {
   children: React.ReactNode
   className?: string
   type?: HTMLButtonElement['type']
   variant?: VariantProps<typeof buttonVariants>['variant']
+  size?: VariantProps<typeof buttonVariants>['size']
 }) {
   const { pending } = useFormStatus()
 
@@ -24,6 +26,7 @@ export default function SubmitButton({
       type={type}
       variant={variant}
       disabled={pending}
+      size={size}
     >
       {pending ? <MiniSpinner /> : children}
     </Button>
