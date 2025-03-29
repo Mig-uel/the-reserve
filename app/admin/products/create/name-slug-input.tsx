@@ -39,7 +39,7 @@ export default function NameSlugInput() {
             type='text'
             placeholder='Product Slug'
             required
-            disabled
+            readOnly
             value={slug}
           />
         </div>
