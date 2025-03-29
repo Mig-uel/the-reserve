@@ -163,3 +163,10 @@ export const UpdateUserProfileSchema = z.object({
     .email('Invalid email address')
     .min(3, 'Email must be at least 3 characters'),
 })
+
+/**
+ * Schema for Updating Products
+ */
+export const UpdateProductSchema = InsertProductSchema.extend({
+  id: z.string().min(1, 'Product ID is required'),
+})
