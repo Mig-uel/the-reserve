@@ -1,10 +1,11 @@
 'use server'
-import { prisma } from '@/db/prisma'
-import { convertToPlainObject, formatErrors } from '../utils'
-import { LATEST_PRODUCTS_LIMIT, PAGE_SIZE } from '../constants'
 import { auth } from '@/auth'
-import { revalidatePath } from 'next/cache'
+import { prisma } from '@/db/prisma'
 import { InsertProductSchema, UpdateProductSchema } from '@/zod/validators'
+import { revalidatePath } from 'next/cache'
+import { LATEST_PRODUCTS_LIMIT, PAGE_SIZE } from '../constants'
+import { convertToPlainObject, formatErrors } from '../utils'
+import { redirect } from 'next/navigation'
 
 /**
  * Get Latest Products
@@ -49,6 +50,7 @@ export async function getAllProducts({
   const products = await prisma.product.findMany({
     skip: (page - 1) * limit,
     take: limit,
+    orderBy: { createdAt: 'desc' },
   })
 
   const productsCount = await prisma.product.count()
@@ -114,18 +116,20 @@ export async function deleteProduct(
  * @access Admin
  */
 export async function createProduct(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   prevState: any,
   formData: FormData
 ) {
   try {
+    console.log(Object.fromEntries(formData.entries()))
     const product = InsertProductSchema.parse({
       name: formData.get('name'),
       slug: formData.get('slug'),
       description: formData.get('description'),
-      price: Number(formData.get('price')),
+      price: formData.get('price'),
       stock: Number(formData.get('stock')),
-      categoryId: formData.get('categoryId'),
+      category: formData.get('category'),
+      brand: formData.get('brand'),
       // image: formData.get('image'),
     })
 
@@ -133,13 +137,12 @@ export async function createProduct(
       data: product,
     })
 
+    revalidatePath('/admin/products/create')
     revalidatePath('/admin/products')
 
-    return {
-      success: true,
-      message: 'Product created successfully',
-    }
+    return redirect('/admin/products')
   } catch (error) {
+    console.log(error)
     return {
       success: false,
       message: formatErrors(error as Error),
@@ -152,7 +155,7 @@ export async function createProduct(
  * @access Admin
  */
 export async function updateProduct(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   prevState: any,
   formData: FormData
 ) {
