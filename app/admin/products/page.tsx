@@ -84,6 +84,7 @@ export default async function AdminProductsPage({ searchParams }: Props) {
                   </Link>
                 </Button>
 
+                {/* TODO: add a way to delete images when deleting product from database */}
                 <FormContainer action={deleteProduct.bind(null, product.id)}>
                   <SubmitButton variant='destructive'>
                     <Trash className='w-4 h-4' />
