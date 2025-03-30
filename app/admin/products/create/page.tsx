@@ -2,11 +2,12 @@ import FormContainer from '@/components/shared/form/form-container'
 import SubmitButton from '@/components/submit-button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import { createProduct } from '@/lib/actions/product.actions'
+import { Plus } from 'lucide-react'
 import { Metadata } from 'next'
 import NameSlugInput from './name-slug-input'
-import { Textarea } from '@/components/ui/textarea'
-import { Plus } from 'lucide-react'
+import ImageUploadInput from './image-upload-input'
 
 export const metadata: Metadata = {
   title: 'Create Product',
@@ -81,8 +82,9 @@ export default function AdminCreateProductPage() {
             </div>
           </div>
 
-          <div className='upload-field flex flex-col md:flex-row gap-5'>
-            {/* TODO: images */}
+          <div className='upload-field flex flex-col md:flex-row gap-5 col-span-2'>
+            {/* Product Images */}
+            <ImageUploadInput />
           </div>
 
           <div className='upload-field'>{/* TODO: isFeatured */}</div>
