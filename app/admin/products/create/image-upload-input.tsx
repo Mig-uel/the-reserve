@@ -1,6 +1,7 @@
 'use client'
 
-//TODO: add a way to remove images from the list
+// TODO: add a way to remove images from the list
+// TODO: add deletion of images from the server
 
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
