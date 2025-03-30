@@ -3,9 +3,10 @@ import { auth } from '@/auth'
 import { prisma } from '@/db/prisma'
 import { InsertProductSchema, UpdateProductSchema } from '@/zod/validators'
 import { revalidatePath } from 'next/cache'
+import { isRedirectError } from 'next/dist/client/components/redirect-error'
+import { redirect } from 'next/navigation'
 import { LATEST_PRODUCTS_LIMIT, PAGE_SIZE } from '../constants'
 import { convertToPlainObject, formatErrors } from '../utils'
-import { redirect } from 'next/navigation'
 
 /**
  * Get Latest Products
@@ -121,7 +122,8 @@ export async function createProduct(
   formData: FormData
 ) {
   try {
-    console.log(Object.fromEntries(formData.entries()))
+    const imagesArray = JSON.parse(formData.get('images') as string)
+
     const product = InsertProductSchema.parse({
       name: formData.get('name'),
       slug: formData.get('slug'),
@@ -130,7 +132,7 @@ export async function createProduct(
       stock: Number(formData.get('stock')),
       category: formData.get('category'),
       brand: formData.get('brand'),
-      // image: formData.get('image'),
+      images: imagesArray,
     })
 
     await prisma.product.create({
@@ -142,7 +144,8 @@ export async function createProduct(
 
     return redirect('/admin/products')
   } catch (error) {
-    console.log(error)
+    if (isRedirectError(error)) throw error
+
     return {
       success: false,
       message: formatErrors(error as Error),
