@@ -35,8 +35,11 @@ export default async function AdminProductsPage({ searchParams }: Props) {
 
   if (!data || !data.products || data.products.length === 0) {
     return (
-      <div className='flex h-full items-center justify-center'>
+      <div className='flex-between'>
         <h1 className='h2-bold'>No Products Found</h1>
+        <Button asChild>
+          <Link href='/admin/products/create'>Create Product</Link>
+        </Button>
       </div>
     )
   }
