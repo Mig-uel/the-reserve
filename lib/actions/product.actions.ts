@@ -133,6 +133,8 @@ export async function createProduct(
       category: formData.get('category'),
       brand: formData.get('brand'),
       images: imagesArray,
+      isFeatured: Boolean(formData.get('isFeatured')),
+      banner: formData.get('banner') || null,
     })
 
     await prisma.product.create({
