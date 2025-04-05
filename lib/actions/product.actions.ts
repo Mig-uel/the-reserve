@@ -21,17 +21,6 @@ export async function getLatestProducts() {
 }
 
 /**
- * Get Single Product By Slug
- */
-export async function getProductBySlug(slug: string) {
-  return await prisma.product.findFirst({
-    where: {
-      slug,
-    },
-  })
-}
-
-/**
  * Get All Products
  * @access Admin
  */
@@ -203,4 +192,28 @@ export async function updateProduct(
       message: formatErrors(error as Error),
     }
   }
+}
+
+/**
+ * Get Single Product By Slug
+ */
+export async function getProductBySlug(slug: string) {
+  return await prisma.product.findFirst({
+    where: {
+      slug,
+    },
+  })
+}
+
+/**
+ * Get Single Product By ID
+ */
+export async function getProductById(id: string) {
+  return convertToPlainObject(
+    await prisma.product.findFirst({
+      where: {
+        id,
+      },
+    })
+  )
 }
