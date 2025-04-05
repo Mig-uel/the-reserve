@@ -6,8 +6,9 @@ import { Textarea } from '@/components/ui/textarea'
 import { createProduct } from '@/lib/actions/product.actions'
 import { Plus } from 'lucide-react'
 import { Metadata } from 'next'
-import NameSlugInput from './name-slug-input'
 import ImageUploadInput from './image-upload-input'
+import NameSlugInput from './name-slug-input'
+import FeaturedInput from './featured-input'
 
 export const metadata: Metadata = {
   title: 'Create Product',
@@ -88,7 +89,8 @@ export default function AdminCreateProductPage() {
             <ImageUploadInput />
           </div>
 
-          <div className='upload-field'>{/* TODO: isFeatured */}</div>
+          {/* Featured */}
+          <FeaturedInput />
 
           <div className='flex flex-col md:flex-row gap-5 col-span-2'>
             {/* Product Description */}
