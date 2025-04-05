@@ -17,6 +17,7 @@ import { formatErrors } from '../utils'
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { PAGE_SIZE } from '../constants'
 
 /**
  * Sign In User with Credentials
@@ -264,5 +265,34 @@ export async function updateUserProfile(
       message: formatErrors(error as Error),
       success: false,
     }
+  }
+}
+
+/**
+ * Get All Users
+ */
+export async function getAllUsers({
+  limit = PAGE_SIZE,
+  page,
+}: {
+  limit?: number
+  page: number
+}) {
+  const users = await prisma.user.findMany({
+    orderBy: {
+      createdAt: 'desc',
+    },
+
+    take: limit,
+    skip: (page - 1) * limit,
+  })
+
+  const total = await prisma.user.count()
+  const totalPages = Math.ceil(total / limit)
+
+  return {
+    users,
+    total,
+    totalPages,
   }
 }
