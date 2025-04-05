@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { getAllUsers } from '@/lib/actions/user.action'
+import { deleteUser, getAllUsers } from '@/lib/actions/user.action'
 import { shortenUUID } from '@/lib/utils'
 import { Pen } from 'lucide-react'
 import type { Metadata } from 'next'
@@ -69,13 +69,7 @@ export default async function UsersPage({ searchParams }: Props) {
                     </Link>
                   </Button>
 
-                  {/* <DeleteDialog
-                    id={user.id}
-                    action={async () => {
-                      'use server'
-                      console.log('Delete user action')
-                    }}
-                  /> */}
+                  <DeleteDialog id={user.id} action={deleteUser} />
                 </TableCell>
               </TableRow>
             ))}
