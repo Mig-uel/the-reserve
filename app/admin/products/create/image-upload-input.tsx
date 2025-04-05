@@ -11,8 +11,8 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-export default function ImageUploadInput() {
-  const [images, setImages] = useState<string[]>([])
+export default function ImageUploadInput({ images }: { images: string[] }) {
+  const [imagesState, setImagesState] = useState<string[]>(images || [])
 
   return (
     <div className='w-full'>
@@ -20,8 +20,8 @@ export default function ImageUploadInput() {
       <Card>
         <CardContent className='space-y-2 mt-2 min-h-48'>
           <div className='flex-start space-x-2'>
-            {images.length
-              ? images.map((image, index) => {
+            {imagesState.length
+              ? imagesState.map((image, index) => {
                   return (
                     <Image
                       key={image}
@@ -43,13 +43,17 @@ export default function ImageUploadInput() {
               toast.error('Error: ' + error.message)
             }}
             onClientUploadComplete={(res: { url: string }[]) => {
-              setImages((prev) => [...prev, res[0].url])
+              setImagesState((prev) => [...prev, res[0].url])
 
               toast.success('Uploaded successfully!')
             }}
           />
 
-          <Input type='hidden' name='images' value={JSON.stringify(images)} />
+          <Input
+            type='hidden'
+            name='images'
+            value={JSON.stringify(imagesState)}
+          />
         </CardContent>
       </Card>
     </div>

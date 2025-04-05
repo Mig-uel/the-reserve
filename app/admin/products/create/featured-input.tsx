@@ -9,9 +9,15 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-export default function FeaturedInput() {
-  const [isFeatured, setIsFeatured] = useState(false)
-  const [bannerImage, setBannerImage] = useState<string>('')
+export default function FeaturedInput({
+  isFeatured,
+  banner,
+}: {
+  isFeatured?: boolean
+  banner?: string
+}) {
+  const [isFeaturedState, setIsFeaturedState] = useState(isFeatured || false)
+  const [bannerImageState, setBannerImageState] = useState<string>(banner || '')
 
   return (
     <div className='upload-field'>
@@ -26,27 +32,27 @@ export default function FeaturedInput() {
             <Checkbox
               id='isFeatured'
               name='isFeatured'
-              checked={isFeatured}
-              onCheckedChange={() => setIsFeatured((prev) => !prev)}
+              checked={isFeaturedState}
+              onCheckedChange={() => setIsFeaturedState((prev) => !prev)}
             />
             <Label htmlFor='isFeatured'>Featured</Label>
           </div>
 
-          {isFeatured && bannerImage ? (
+          {isFeaturedState && bannerImageState ? (
             <>
               <Image
-                src={bannerImage}
+                src={bannerImageState}
                 alt='Banner image'
                 className='w-full object-cover object-center rounded-sm'
                 width={1920}
                 height={680}
               />
-              <Input type='hidden' name='banner' value={bannerImage} />
+              <Input type='hidden' name='banner' value={bannerImageState} />
             </>
           ) : null}
 
           {/* TODO: make into reusable component */}
-          {isFeatured && !bannerImage ? (
+          {isFeaturedState && !bannerImageState ? (
             <UploadButton
               className='justify-self-start'
               endpoint='imageUploader'
@@ -54,7 +60,7 @@ export default function FeaturedInput() {
                 toast.error('Error: ' + error.message)
               }}
               onClientUploadComplete={(res: { url: string }[]) => {
-                setBannerImage(res[0].url)
+                setBannerImageState(res[0].url)
 
                 toast.success('Uploaded successfully!')
               }}
