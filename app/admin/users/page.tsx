@@ -64,7 +64,7 @@ export default async function UsersPage({ searchParams }: Props) {
 
                 <TableCell>
                   <Button asChild variant='outline' size='icon'>
-                    <Link href={`/user/${user.id}`}>
+                    <Link href={`/admin/user/${user.id}`}>
                       <Pen className='w-4 h-4' />
                     </Link>
                   </Button>
