@@ -158,16 +158,19 @@ export async function updateProduct(
       name: formData.get('name'),
       slug: formData.get('slug'),
       description: formData.get('description'),
-      price: Number(formData.get('price')),
+      price: formData.get('price'),
       stock: Number(formData.get('stock')),
-      categoryId: formData.get('categoryId'),
       id: formData.get('id'),
-      // image: formData.get('image'),
+      images: JSON.parse(formData.get('images') as string),
+      isFeatured: Boolean(formData.get('isFeatured')),
+      banner: formData.get('banner') || null,
+      category: formData.get('category'),
+      brand: formData.get('brand'),
     })
 
     const existingProduct = await prisma.product.findFirst({
       where: {
-        id: product.id,
+        id: formData.get('id') as string,
       },
     })
 
@@ -175,18 +178,17 @@ export async function updateProduct(
 
     await prisma.product.update({
       where: {
-        id: product.id,
+        id: formData.get('id') as string, // Updated to use formData.get('id')
       },
       data: product,
     })
 
     revalidatePath('/admin/products')
 
-    return {
-      success: true,
-      message: 'Product updated successfully',
-    }
+    return redirect('/admin/products')
   } catch (error) {
+    // Check if the error is a redirect error and throw it to be handled by Next.js
+    if (isRedirectError(error)) throw error
     return {
       success: false,
       message: formatErrors(error as Error),
