@@ -296,3 +296,43 @@ export async function getAllUsers({
     totalPages,
   }
 }
+
+/**
+ * Delete User
+ */
+export async function deleteUser(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  prevState: any,
+  formData: FormData
+) {
+  try {
+    const id = formData.get('id') as string
+
+    const session = await auth()
+
+    if (!session || !session.user || !session.user.role)
+      throw new Error('Must be signed in first')
+
+    if (session.user.role !== 'admin')
+      throw new Error('You are not authorized to perform this action')
+
+    await prisma.user.delete({
+      where: {
+        id,
+      },
+    })
+
+    revalidatePath('/admin/users')
+
+    return {
+      message: 'User deleted successfully',
+      success: true,
+    }
+  } catch (error) {
+    console.log(error)
+    return {
+      message: formatErrors(error as Error),
+      success: false,
+    }
+  }
+}
