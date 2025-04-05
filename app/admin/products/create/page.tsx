@@ -64,6 +64,7 @@ export default function AdminCreateProductPage() {
                 type='number'
                 placeholder='Product Price'
                 required
+                step={0.01}
               />
             </div>
           </div>
