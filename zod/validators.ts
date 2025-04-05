@@ -170,3 +170,13 @@ export const UpdateUserProfileSchema = z.object({
 export const UpdateProductSchema = InsertProductSchema.extend({
   id: z.string().min(1, 'Product ID is required'),
 })
+
+/**
+ * Schema for Updating Users
+ */
+export const UpdateUserSchema = UpdateUserProfileSchema.extend({
+  id: z.string().min(1, 'User ID is required'),
+  role: z.enum(['admin', 'user'], {
+    errorMap: () => ({ message: 'Role must be either admin or user' }),
+  }),
+})
