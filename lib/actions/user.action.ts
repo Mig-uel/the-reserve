@@ -10,6 +10,7 @@ import {
   SignInFormSchema,
   SignUpFormSchema,
   UpdateUserProfileSchema,
+  UpdateUserSchema,
 } from '@/zod/validators'
 import { hashSync } from 'bcrypt-ts-edge'
 import { isRedirectError } from 'next/dist/client/components/redirect-error'
@@ -330,6 +331,63 @@ export async function deleteUser(
     }
   } catch (error) {
     console.log(error)
+    return {
+      message: formatErrors(error as Error),
+      success: false,
+    }
+  }
+}
+
+/**
+ * Update User
+ * @access Admin
+ */
+export async function updateUser(
+  id: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  prevState: any,
+  formData: FormData
+) {
+  try {
+    const session = await auth()
+
+    if (!session || !session.user || !session.user.role)
+      throw new Error('Must be signed in first')
+
+    if (session.user.role !== 'admin')
+      throw new Error('You are not authorized to perform this action')
+
+    const user = await prisma.user.findFirst({
+      where: {
+        id,
+      },
+    })
+
+    if (!user) throw new Error('User not found')
+
+    const userObject = UpdateUserSchema.parse({
+      name: formData.get('name'),
+      email: user.email,
+      role: formData.get('role') || user.role,
+    })
+
+    await prisma.user.update({
+      where: {
+        id,
+      },
+      data: userObject,
+    })
+
+    revalidatePath(`/admin/users/${id}`)
+
+    return {
+      message: 'User updated successfully',
+      success: true,
+    }
+  } catch (error) {
+    console.log(error)
+    if (isRedirectError(error)) throw error
+
     return {
       message: formatErrors(error as Error),
       success: false,
