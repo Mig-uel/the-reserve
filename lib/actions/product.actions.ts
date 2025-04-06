@@ -25,7 +25,6 @@ export async function getLatestProducts() {
  * @access Admin
  */
 export async function getAllProducts({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   query,
   limit = PAGE_SIZE,
   page,
@@ -41,9 +40,22 @@ export async function getAllProducts({
     skip: (page - 1) * limit,
     take: limit,
     orderBy: { createdAt: 'desc' },
+    where: {
+      name: {
+        contains: query,
+        mode: 'insensitive',
+      },
+    },
   })
 
-  const productsCount = await prisma.product.count()
+  const productsCount = await prisma.product.count({
+    where: {
+      name: {
+        contains: query,
+        mode: 'insensitive',
+      },
+    },
+  })
 
   return {
     products: convertToPlainObject(products),
