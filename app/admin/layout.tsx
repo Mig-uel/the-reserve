@@ -1,10 +1,10 @@
 import '@/assets/styles/globals.css'
 import Menu from '@/components/shared/header/menu'
-import { Input } from '@/components/ui/input'
 import { APP_NAME } from '@/lib/constants'
 import Image from 'next/image'
 import Link from 'next/link'
 import AdminNav from './admin-nav'
+import AdminSearch from './admin-search'
 
 export default function AdminLayout({
   children,
@@ -29,11 +29,7 @@ export default function AdminLayout({
             <AdminNav className='' />
 
             <div className='ml-auto items-center flex space-x-4'>
-              <Input
-                type='search'
-                placeholder='Search...'
-                className='md:w-[100px] lg:w-[300px]'
-              />
+              <AdminSearch />
               <Menu />
             </div>
           </div>
