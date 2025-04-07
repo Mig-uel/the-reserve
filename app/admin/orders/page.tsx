@@ -21,25 +21,32 @@ export const metadata: Metadata = {
 }
 
 type Props = {
-  searchParams: Promise<{ page: string }>
+  searchParams: Promise<{ page: string; query?: string }>
 }
 
 export default async function AdminOrdersPage({ searchParams }: Props) {
   await requireAdmin()
-  const { page = 1 } = await searchParams
+  const { page = 1, query: searchText = '' } = await searchParams
 
-  const orders = await getAllOrders({ page: Number(page), limit: 10 })
+  const orders = await getAllOrders({
+    page: Number(page),
+    limit: 10,
+    query: searchText,
+  })
 
   return (
     <div className='space-y-2'>
-      <div className='h2-bold'>All Orders</div>
+      <div className='flex items-center justify-between'>
+        <div className='h2-bold'>All Orders</div>
+        {/* TODO: create client component to show filtering status */}
+      </div>
 
       <div className='overflow-x-auto'>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>ID</TableHead>
-              <TableHead>USER</TableHead>
+              <TableHead>BUYER</TableHead>
               <TableHead>DATE</TableHead>
               <TableHead>TOTAL</TableHead>
               <TableHead>PAID</TableHead>
