@@ -19,6 +19,7 @@ import { formatErrors } from '../utils'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { PAGE_SIZE } from '../constants'
+import type { Prisma } from '@prisma/client'
 
 /**
  * Sign In User with Credentials
@@ -275,11 +276,27 @@ export async function updateUserProfile(
 export async function getAllUsers({
   limit = PAGE_SIZE,
   page,
+  query = '',
 }: {
   limit?: number
   page: number
+  query?: string
 }) {
+  const queryFilter: Prisma.UserWhereInput =
+    query.trim() && query !== 'all'
+      ? {
+          name: {
+            contains: query,
+            mode: 'insensitive',
+          } as Prisma.StringFilter,
+        }
+      : {}
+
   const users = await prisma.user.findMany({
+    where: {
+      // filter by name
+      ...queryFilter,
+    },
     orderBy: {
       createdAt: 'desc',
     },
