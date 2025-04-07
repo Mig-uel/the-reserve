@@ -3,26 +3,24 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { X } from 'lucide-react'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 
 export default function AdminSearch() {
   const [queryValue, setQueryValue] = useState('')
   const pathname = usePathname()
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   function handleSearch(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
     if (!queryValue.trim()) return router.replace(pathname)
 
-    if (pathname === '/admin/orders') {
-      router.replace(`/admin/orders?query=${queryValue}`)
-    } else if (pathname === '/admin/products') {
-      router.push(`/admin/products?query=${queryValue}`)
-    } else if (pathname === '/admin/users') {
-      router.replace(`/admin/users?query=${queryValue}`)
-    }
+    const params = new URLSearchParams(searchParams)
+    params.set('query', queryValue.trim())
+
+    return router.push(`${pathname}?${params.toString()}`)
   }
 
   return (
