@@ -21,12 +21,15 @@ export const metadata: Metadata = {
 }
 
 type Props = {
-  searchParams: Promise<{ page?: string }>
+  searchParams: Promise<{ page?: string; query?: string }>
 }
 
 export default async function UsersPage({ searchParams }: Props) {
-  const { page = '1' } = await searchParams
-  const { totalPages, users } = await getAllUsers({ page: Number(page) })
+  const { page = '1', query: searchText = '' } = await searchParams
+  const { totalPages, users } = await getAllUsers({
+    page: Number(page),
+    query: searchText,
+  })
 
   if (!users) {
     return <div>No users found</div>
@@ -34,7 +37,7 @@ export default async function UsersPage({ searchParams }: Props) {
 
   return (
     <div className='space-y-2'>
-      <div className='h2-bold'>All Orders</div>
+      <div className='h2-bold'>All Users</div>
 
       <div className='overflow-x-auto'>
         <Table>
