@@ -231,3 +231,17 @@ export async function getProductById(id: string) {
     })
   )
 }
+
+/**
+ * Get All Categories
+ */
+export async function getAllCategories() {
+  const data = await prisma.product.groupBy({
+    by: ['category'],
+    _count: {
+      category: true,
+    },
+  })
+
+  return data
+}
