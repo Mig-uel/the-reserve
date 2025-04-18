@@ -7,6 +7,7 @@ import { isRedirectError } from 'next/dist/client/components/redirect-error'
 import { redirect } from 'next/navigation'
 import { LATEST_PRODUCTS_LIMIT, PAGE_SIZE } from '../constants'
 import { convertToPlainObject, formatErrors } from '../utils'
+import type { Prisma } from '@prisma/client'
 
 /**
  * Get Latest Products
@@ -28,23 +29,73 @@ export async function getAllProducts({
   query,
   limit = PAGE_SIZE,
   page,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   category,
+  price,
+  rating,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  sort,
 }: {
   query: string
   limit?: number
   page: number
   category?: string
+  price?: string
+  rating?: string
+  sort?: string
 }) {
+  // query filter
+  const queryFilter: Prisma.ProductWhereInput =
+    query && query !== 'all'
+      ? {
+          name: {
+            contains: query,
+            mode: 'insensitive',
+          } as Prisma.StringFilter,
+        }
+      : {}
+
+  // category filter
+  const categoryFilter: Prisma.ProductWhereInput =
+    category && category !== 'all' ? { category } : {}
+
+  // price filter
+  const priceRange = price && price !== 'all' ? price.split('-') : []
+  const priceFilter: Prisma.ProductWhereInput =
+    priceRange.length === 2 && priceRange[0] && priceRange[1]
+      ? {
+          price: {
+            gte: Number(priceRange[0]) || undefined,
+            lte: Number(priceRange[1]) || undefined,
+          } as Prisma.IntFilter,
+        }
+      : {}
+
+  // rating filter
+  const ratingFilter: Prisma.ProductWhereInput =
+    rating && rating !== 'all'
+      ? {
+          rating: {
+            gte: Number(rating) || undefined,
+          } as Prisma.IntFilter,
+        }
+      : {}
+
   const products = await prisma.product.findMany({
     skip: (page - 1) * limit,
     take: limit,
     orderBy: { createdAt: 'desc' },
     where: {
-      name: {
-        contains: query,
-        mode: 'insensitive',
-      },
+      // spread the query filter
+      ...queryFilter,
+
+      // spread the category filter
+      ...categoryFilter,
+
+      // spread the price filter
+      ...priceFilter,
+
+      // spread the rating filter
+      ...ratingFilter,
     },
   })
 
