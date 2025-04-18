@@ -1,3 +1,4 @@
+import Pagination from '@/components/pagination'
 import ProductCard from '@/components/shared/product/product-card'
 import { Button } from '@/components/ui/button'
 import { getAllCategories, getAllProducts } from '@/lib/actions/product.actions'
@@ -220,13 +221,16 @@ export default async function SearchPage({ searchParams }: Props) {
         <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
           {products.products.length > 0 ? (
             products.products.map((product) => (
-              // @ts-expect-error fix type error
+              /* @ts-expect-error fix type */
               <ProductCard key={product.id} product={product} />
             ))
           ) : (
             <div>No Products Found</div>
           )}
         </div>
+
+        {/* TODO: fix pagination logic */}
+        <Pagination page={page} totalPages={products.totalPages} />
       </div>
     </div>
   )
