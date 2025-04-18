@@ -1,4 +1,5 @@
 import ProductCard from '@/components/shared/product/product-card'
+import { Button } from '@/components/ui/button'
 import { getAllCategories, getAllProducts } from '@/lib/actions/product.actions'
 import type { Metadata } from 'next'
 import Link from 'next/link'
@@ -41,6 +42,8 @@ const priceRanges = [
   },
 ]
 
+const ratings = [4, 3, 2, 1]
+
 export default async function SearchPage({ searchParams }: Props) {
   const {
     q = 'all',
@@ -51,6 +54,37 @@ export default async function SearchPage({ searchParams }: Props) {
     page = '1',
   } = await searchParams
 
+  const filterUrl = ({
+    c, // category
+    s, // sort
+    p, // price
+    r, // rating
+    pg, // page
+  }: {
+    c?: string
+    s?: string
+    p?: string
+    r?: string
+    pg?: string
+  }) => {
+    const params = new URLSearchParams({
+      q,
+      category,
+      price,
+      rating,
+      sort,
+      page,
+    })
+
+    if (c) params.set('category', c)
+    if (s) params.set('sort', s)
+    if (p) params.set('price', p)
+    if (r) params.set('rating', r)
+    if (pg) params.set('page', pg)
+
+    return '/search?' + params.toString()
+  }
+
   const products = await getAllProducts({
     query: q,
     category,
@@ -59,30 +93,6 @@ export default async function SearchPage({ searchParams }: Props) {
     sort,
     page: Number(page),
   })
-
-  const filterUrl = ({
-    q,
-    category,
-    price,
-    rating,
-    sort,
-  }: {
-    q?: string
-    category?: string
-    price?: string
-    rating?: string
-    sort?: string
-  }) => {
-    const params = new URLSearchParams()
-
-    if (q) params.set('q', q)
-    if (category) params.set('category', category)
-    if (price) params.set('price', price)
-    if (rating) params.set('rating', rating)
-    if (sort) params.set('sort', sort)
-
-    return '/search?' + params.toString()
-  }
 
   const categories = await getAllCategories()
 
@@ -93,7 +103,6 @@ export default async function SearchPage({ searchParams }: Props) {
         <div className='text-xl mb-2 mt-3'>Department</div>
         <div>
           <ul className='space-y-1'>
-            {/* Add category links here */}
             <li>
               <Link
                 href={filterUrl({})}
@@ -108,7 +117,7 @@ export default async function SearchPage({ searchParams }: Props) {
             {categories.map((c) => (
               <li key={c.category}>
                 <Link
-                  href={filterUrl({ category: c.category })}
+                  href={filterUrl({ c: c.category })}
                   className={category === c.category ? 'font-bold' : ''}
                 >
                   {c.category}
@@ -122,7 +131,6 @@ export default async function SearchPage({ searchParams }: Props) {
         <div className='text-xl mb-2 mt-8'>Price Range</div>
         <div>
           <ul className='space-y-1'>
-            {/* Add category links here */}
             <li>
               <Link
                 href={filterUrl({})}
@@ -135,7 +143,7 @@ export default async function SearchPage({ searchParams }: Props) {
             {priceRanges.map((p) => (
               <li key={p.name}>
                 <Link
-                  href={filterUrl({ price: p.value })}
+                  href={filterUrl({ p: p.value })}
                   className={price === p.value ? 'font-bold' : ''}
                 >
                   {p.name}
@@ -144,9 +152,57 @@ export default async function SearchPage({ searchParams }: Props) {
             ))}
           </ul>
         </div>
+
+        {/* Rating Links */}
+        <div className='text-xl mb-2 mt-8'>Customer Ratings</div>
+        <div>
+          <ul className='space-y-1'>
+            <li>
+              <Link
+                href={filterUrl({})}
+                className={rating === 'all' ? 'font-bold' : ''}
+              >
+                Any
+              </Link>
+            </li>
+
+            {ratings.map((r) => (
+              <li key={r}>
+                <Link
+                  href={filterUrl({ r: r.toString() })}
+                  className={rating === r.toString() ? 'font-bold' : ''}
+                >
+                  {r} stars & up
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
 
       <div className='space-y-4 md:col-span-4'>
+        <div className='flex-between flex-col my-4 md:flex-row'>
+          <div className='flex items-center'>
+            {q !== 'all' && q !== '' ? 'Query: ' + q : ''}
+            {category !== 'all' && category !== ''
+              ? 'Category: ' + category
+              : ''}
+            {price !== 'all' ? ' Price: ' + price : ''}
+            {rating !== 'all' ? ' Rating: ' + rating + ' stars & up' : ''}
+            &nbsp;
+            {(q !== 'all' && q !== '') ||
+            (category !== 'all' && category !== '') ||
+            price !== 'all' ||
+            rating !== 'all' ? (
+              <Button variant='link' asChild>
+                <Link href='/search'>Clear</Link>
+              </Button>
+            ) : null}
+          </div>
+
+          <div>{/* TODO: sort component */}</div>
+        </div>
+
         <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
           {products.products.length > 0 ? (
             products.products.map((product) => (
