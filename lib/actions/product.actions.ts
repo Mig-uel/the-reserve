@@ -32,7 +32,6 @@ export async function getAllProducts({
   category,
   price,
   rating,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   sort,
 }: {
   query: string
@@ -83,7 +82,6 @@ export async function getAllProducts({
   const products = await prisma.product.findMany({
     skip: (page - 1) * limit,
     take: limit,
-    orderBy: { createdAt: 'desc' },
     where: {
       // spread the query filter
       ...queryFilter,
@@ -97,6 +95,14 @@ export async function getAllProducts({
       // spread the rating filter
       ...ratingFilter,
     },
+    orderBy:
+      sort === 'lowest'
+        ? { price: 'asc' }
+        : sort === 'highest'
+        ? { price: 'desc' }
+        : sort === 'rating'
+        ? { rating: 'desc' }
+        : { createdAt: 'desc' }, // default sort
   })
 
   const productsCount = await prisma.product.count({
