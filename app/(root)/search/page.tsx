@@ -1,6 +1,7 @@
 import ProductCard from '@/components/shared/product/product-card'
 import { Button } from '@/components/ui/button'
 import { getAllCategories, getAllProducts } from '@/lib/actions/product.actions'
+import { cn } from '@/lib/utils'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
@@ -43,6 +44,8 @@ const priceRanges = [
 ]
 
 const ratings = [4, 3, 2, 1]
+
+const sortOptions = ['newest', 'lowest', 'highest', 'rating']
 
 export default async function SearchPage({ searchParams }: Props) {
   const {
@@ -105,7 +108,7 @@ export default async function SearchPage({ searchParams }: Props) {
           <ul className='space-y-1'>
             <li>
               <Link
-                href={filterUrl({})}
+                href={filterUrl({ c: 'all' })}
                 className={
                   category === 'all' || category === '' ? 'font-bold' : ''
                 }
@@ -133,7 +136,7 @@ export default async function SearchPage({ searchParams }: Props) {
           <ul className='space-y-1'>
             <li>
               <Link
-                href={filterUrl({})}
+                href={filterUrl({ p: 'all' })}
                 className={price === 'all' ? 'font-bold' : ''}
               >
                 Any
@@ -159,7 +162,7 @@ export default async function SearchPage({ searchParams }: Props) {
           <ul className='space-y-1'>
             <li>
               <Link
-                href={filterUrl({})}
+                href={filterUrl({ r: 'all' })}
                 className={rating === 'all' ? 'font-bold' : ''}
               >
                 Any
@@ -200,7 +203,18 @@ export default async function SearchPage({ searchParams }: Props) {
             ) : null}
           </div>
 
-          <div>{/* TODO: sort component */}</div>
+          <div>
+            Sort by:{' '}
+            {sortOptions.map((s) => (
+              <Link
+                key={s}
+                href={filterUrl({ s: s })}
+                className={cn('mx-2', sort === s ? 'font-bold' : '')}
+              >
+                {s}
+              </Link>
+            ))}
+          </div>
         </div>
 
         <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
