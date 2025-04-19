@@ -86,7 +86,7 @@ export default function AdminCreateProductPage() {
 
           <div className='upload-field flex flex-col md:flex-row gap-5 col-span-2'>
             {/* Product Images */}
-            <ImageUploadInput />
+            <ImageUploadInput images={[]} />
           </div>
 
           {/* Featured */}
