@@ -24,7 +24,7 @@ export default async function ReviewsList({
       {userId.length ? (
         <ReviewForm
           productId={productId}
-          // @t
+          // @ts-expect-error fix type
           userReview={userReview}
         />
       ) : (
