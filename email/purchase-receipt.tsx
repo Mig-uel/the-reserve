@@ -1,3 +1,4 @@
+import sampleData from '@/db/sample-data'
 import { formatCurrency } from '@/lib/utils'
 import type { Order } from '@/zod'
 import {
@@ -15,11 +16,63 @@ import {
   Text,
 } from '\@react-email/components'
 
+type OrderInformationProps = {
+  order: Order
+}
+
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
   dateStyle: 'medium',
 })
 
-export default function PurchaseReceiptEmail({ order }: { order: Order }) {
+PurchaseReceiptEmail.PreviewProps = {
+  order: {
+    id: crypto.randomUUID(),
+    userId: '1234567890',
+
+    user: {
+      name: 'John Doe',
+      email: 'john@email.com',
+    },
+
+    paymentMethod: 'Stripe',
+    shippingAddress: {
+      fullName: 'John Doe',
+      streetAddress: '123 N Main St',
+      city: 'Los Angeles',
+      postalCode: '90001',
+      country: 'US',
+    },
+
+    createdAt: new Date().toString(),
+    totalPrice: '100',
+    taxPrice: '10',
+    shippingPrice: '10',
+    itemsPrice: '80',
+
+    orderItems: sampleData.products.map((i) => ({
+      name: i.name,
+      orderId: '1234',
+      productId: '1234',
+      slug: i.slug,
+      qty: i.stock,
+      image: i.images[0],
+      price: i.price.toString(),
+    })),
+
+    isDelivered: true,
+    deliveredAt: new Date(),
+    isPaid: true,
+    paidAt: new Date(),
+    paymentResult: {
+      id: '1234',
+      status: 'succeeded',
+      pricePaid: '100',
+      email_address: 'john@email.com',
+    },
+  },
+} satisfies OrderInformationProps
+
+export default function PurchaseReceiptEmail({ order }: OrderInformationProps) {
   return (
     <Html>
       <Preview>View order receipt</Preview>
