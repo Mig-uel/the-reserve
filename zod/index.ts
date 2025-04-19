@@ -29,6 +29,7 @@ export type Order = z.infer<typeof InsertOrderSchema> & {
     name: string
     email: string
   }
+  paymentResult: PaymentResult
 }
 export type OrderItem = z.infer<typeof InsertOrderItemSchema>
 
