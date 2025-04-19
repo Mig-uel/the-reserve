@@ -16,10 +16,11 @@ import { hashSync } from 'bcrypt-ts-edge'
 import { isRedirectError } from 'next/dist/client/components/redirect-error'
 import { formatErrors } from '../utils'
 
+import type { Prisma } from '@prisma/client'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { PAGE_SIZE } from '../constants'
-import type { Prisma } from '@prisma/client'
+import { getUserCart } from './cart.actions'
 
 /**
  * Sign In User with Credentials
@@ -56,6 +57,15 @@ export async function signInWithCredentials(
  * Sign Out User
  */
 export async function signOutUser() {
+  // get current users cart and delete it so it doesn't persist after sign out
+  const currentCart = await getUserCart()
+  await prisma.cart.deleteMany({
+    where: {
+      id: currentCart?.id,
+    },
+  })
+
+  // sign out user
   await signOut()
 }
 
