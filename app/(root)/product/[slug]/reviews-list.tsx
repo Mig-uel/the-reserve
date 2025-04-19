@@ -1,8 +1,6 @@
 import { auth } from '@/auth'
+import Rating from '@/components/rating'
 import { Button } from '@/components/ui/button'
-import { getAllReviews, getUserReview } from '@/lib/actions/review.actions'
-import Link from 'next/link'
-import ReviewForm from './review-form'
 import {
   Card,
   CardContent,
@@ -10,9 +8,11 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Calendar, UserIcon } from 'lucide-react'
+import { getAllReviews, getUserReview } from '@/lib/actions/review.actions'
 import { formatDateTime } from '@/lib/utils'
-import Rating from '@/components/rating'
+import { Calendar, UserIcon } from 'lucide-react'
+import Link from 'next/link'
+import ReviewForm from './review-form'
 
 export default async function ReviewsList({
   productId,
