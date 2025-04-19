@@ -98,8 +98,7 @@ export default function PurchaseReceiptEmail({ order }: OrderInformationProps) {
                     Purchase Date
                   </Text>
                   <Text className='mt-0 mr-4'>
-                    {/* @ts-expect-error fix arg type later */}
-                    {dateFormatter.format(order.createdAt)}
+                    {dateFormatter.format(new Date(order.createdAt))}
                   </Text>
                 </Column>
 
