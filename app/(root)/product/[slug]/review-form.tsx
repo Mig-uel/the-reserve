@@ -22,21 +22,32 @@ import {
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { createUpdateReview } from '@/lib/actions/review.actions'
+import type { Review } from '@/zod'
 import { StarIcon } from 'lucide-react'
 import { useState } from 'react'
 
-export default function ReviewForm({ productId }: { productId: string }) {
+export default function ReviewForm({
+  productId,
+  userReview,
+}: {
+  productId: string
+  userReview: Review | null
+}) {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
     // TODO: close dialog on success
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <Button onClick={() => setIsOpen(true)}>Leave a Review</Button>
+      <Button onClick={() => setIsOpen(true)}>
+        {userReview ? 'Update Review' : 'Leave a Review'}
+      </Button>
 
       <DialogContent className='sm:max-w-[425px]'>
         <FormContainer action={createUpdateReview.bind(null, productId)}>
           <DialogHeader>
-            <DialogTitle>Leave a Review</DialogTitle>
+            <DialogTitle>
+              {userReview ? 'Update Review' : 'Leave a Review'}
+            </DialogTitle>
             <DialogDescription>
               Share your thoughts with other customers
             </DialogDescription>
@@ -50,6 +61,7 @@ export default function ReviewForm({ productId }: { productId: string }) {
                 type='text'
                 id='title'
                 placeholder='Enter a title'
+                defaultValue={userReview?.title || ''}
                 required
               />
             </div>
@@ -60,13 +72,18 @@ export default function ReviewForm({ productId }: { productId: string }) {
                 name='description'
                 id='description'
                 placeholder='Enter a description'
+                defaultValue={userReview?.description || ''}
                 required
               />
             </div>
 
             <div>
               <Label htmlFor='rating'>Rating</Label>
-              <Select name='rating' required>
+              <Select
+                name='rating'
+                required
+                defaultValue={String(userReview?.rating) || ''}
+              >
                 <SelectTrigger className='w-full'>
                   <SelectValue placeholder='Select a rating' />
                 </SelectTrigger>
@@ -84,7 +101,7 @@ export default function ReviewForm({ productId }: { productId: string }) {
 
           <DialogFooter>
             <SubmitButton size='lg' className='w-full'>
-              Submit
+              {userReview ? 'Update Review' : 'Submit Review'}
             </SubmitButton>
           </DialogFooter>
         </FormContainer>
