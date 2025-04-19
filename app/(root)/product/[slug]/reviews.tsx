@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import type { Review } from '@/zod'
 import Link from 'next/link'
 import { useState } from 'react'
+import ReviewForm from './review-form'
 
 export default function Reviews({
   productSlug,
@@ -17,14 +18,12 @@ export default function Reviews({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [reviews, setReviews] = useState<Review[]>([])
 
-  console.log(userId)
-
   return (
     <div className='space-y-4'>
       {!reviews.length ? <div>No reviews yet</div> : null}
 
       {userId.length ? (
-        <></>
+        <ReviewForm userId={userId} productId={productSlug} />
       ) : (
         <div>
           <Button asChild variant='link' className='px-1 text-md'>
