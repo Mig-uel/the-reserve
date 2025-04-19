@@ -3,6 +3,7 @@ import type { Product } from '@prisma/client'
 import Image from 'next/image'
 import Link from 'next/link'
 import ProductPrice from './product-price'
+import Rating from '@/components/rating'
 
 export default function ProductCard({ product }: { product: Product }) {
   const href = `/product/${product.slug}`
@@ -29,7 +30,7 @@ export default function ProductCard({ product }: { product: Product }) {
         </Link>
 
         <div className='flex-between gap-4'>
-          <p>{+product.rating} stars</p>
+          <Rating value={+product.rating} />
 
           {product.stock ? (
             <ProductPrice value={+product.price} />
