@@ -9,9 +9,11 @@ import { useState } from 'react'
 import ReviewForm from './review-form'
 
 export default function Reviews({
+  productId,
   productSlug,
   userId,
 }: {
+  productId: string
   productSlug: string
   userId: string
 }) {
@@ -23,10 +25,7 @@ export default function Reviews({
       {!reviews.length ? <div>No reviews yet</div> : null}
 
       {userId.length ? (
-        <ReviewForm
-          // userId={userId}
-          productId={productSlug}
-        />
+        <ReviewForm productId={productId} />
       ) : (
         <div>
           <Button asChild variant='link' className='px-1 text-md'>
