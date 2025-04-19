@@ -37,16 +37,17 @@ export default async function StripeSuccessPage({
   const isPaymentSuccessful = paymentIntent.status === 'succeeded'
 
   if (!isPaymentSuccessful) {
-    return redirect(`/order/${orderId}`)
+    return redirect(`/user/orders`)
   }
 
+  // TODO: fix orderId
   return (
     <div className='max-w-4xl w-full mx-auto space-y-8'>
       <div className='flex flex-col gap-6 items-center'>
         <h1 className='h1-bold'>Thanks for your purchase</h1>
         <div>We are processing your order.</div>
         <Button asChild>
-          <Link href={`/order/${orderId}`}>View Order</Link>
+          <Link href={`/user/orders`}>View Order</Link>
         </Button>
       </div>
     </div>
