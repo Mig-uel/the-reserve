@@ -1,7 +1,10 @@
 // TODO: prevent unauthorized user access to this page; if user does not own this order, redirect to 404 page
 
+import { auth } from '@/auth'
 import CartSubtotal from '@/components/shared/cart/cart-subtotal'
 import CartTable from '@/components/shared/cart/cart-table'
+import FormContainer from '@/components/shared/form/form-container'
+import SubmitButton from '@/components/submit-button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import {
@@ -12,10 +15,9 @@ import {
 import { formatDateTime, shortenUUID } from '@/lib/utils'
 import { ShippingAddress } from '@/zod'
 import { notFound } from 'next/navigation'
+import Stripe from 'stripe'
 import PayPal from './paypal'
-import { auth } from '@/auth'
-import FormContainer from '@/components/shared/form/form-container'
-import SubmitButton from '@/components/submit-button'
+import StripePayment from './stripe'
 
 type Props = {
   params: Promise<{ orderId: string }>
@@ -45,6 +47,24 @@ export default async function OrderDetailsTable({ params }: Props) {
   } = order
 
   const shippingAddress = order.shippingAddress as ShippingAddress
+
+  // stripe config
+  let client_secret = ''
+  if (paymentMethod === 'Stripe' && !isPaid) {
+    // init stripe instance
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '')
+
+    // create payment intent
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(Number(totalPrice) * 100), // convert to cents
+      currency: 'usd',
+      metadata: {
+        orderId: id,
+      },
+    })
+
+    client_secret = paymentIntent.client_secret || ''
+  }
 
   return (
     <>
@@ -138,6 +158,15 @@ export default async function OrderDetailsTable({ params }: Props) {
                 userId: order.userId,
               }}
               paypalClientId={process.env.PAYPAL_CLIENT_ID || 'sb'}
+            />
+          ) : null}
+
+          {/* Stripe Payment */}
+          {!isPaid && paymentMethod === 'Stripe' ? (
+            <StripePayment
+              priceInCents={Math.round(Number(totalPrice) * 100)} // convert to cents
+              orderId={id}
+              clientSecret={client_secret}
             />
           ) : null}
 
