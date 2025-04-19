@@ -9,6 +9,7 @@ import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import AddToCart from '../../../../components/shared/product/add-to-cart'
 import ReviewsList from './reviews-list'
+import Rating from '@/components/rating'
 
 type Props = {
   params: Promise<{ slug: string }>
@@ -46,9 +47,15 @@ export default async function ProductDetailsPage({ params }: Props) {
                 {product.brand} {product.category}
               </p>
               <h1 className='h3-bold'>{product.name}</h1>
-              <p>
-                {product.rating} of {product.numReviews} Reviews
-              </p>
+
+              <div>
+                <Rating value={+product.rating} />
+                <p className='text-sm text-muted-foreground mt-2'>
+                  {product.numReviews}{' '}
+                  {product.numReviews > 1 ? 'Reviews' : 'Review'}
+                </p>
+              </div>
+
               <div className='flex flex-col gap-3 sm:flex-row sm:items-center'>
                 <ProductPrice
                   value={+product.price}
@@ -109,7 +116,7 @@ export default async function ProductDetailsPage({ params }: Props) {
 
       {/* Customer Reviews */}
       <section className='mt-10'>
-        <h2 className='h2-bold'>Customer Reviews</h2>
+        <h2 className='h2-bold mb-6'>Customer Reviews</h2>
         <Suspense fallback={<MiniSpinner />}>
           <ReviewsList productId={product.id} productSlug={product.slug} />
         </Suspense>
