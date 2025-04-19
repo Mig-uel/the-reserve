@@ -1,19 +1,20 @@
-// TODO: send toasts to the user when an error occurs
 'use server'
 
 import { auth } from '@/auth'
 import { prisma } from '@/db/prisma'
+import { sendPurchaseReceiptEmail } from '@/email'
+import { PaymentResult } from '@/zod'
 import { InsertOrderSchema } from '@/zod/validators'
+import { Prisma } from '@prisma/client'
 import { revalidatePath } from 'next/cache'
 import { isRedirectError } from 'next/dist/client/components/redirect-error'
 import { notFound, redirect } from 'next/navigation'
+import { PAGE_SIZE } from '../constants'
 import { paypal } from '../paypal'
 import { convertToPlainObject, formatErrors } from '../utils'
+import { ShippingAddress } from './../../zod/index'
 import { getUserCart } from './cart.actions'
 import { getUserById } from './user.action'
-import { PaymentResult } from '@/zod'
-import { PAGE_SIZE } from '../constants'
-import { Prisma } from '@prisma/client'
 
 /**
  * Create Order Item and Order
@@ -274,6 +275,15 @@ export async function updateOrderToPaid({
   })
 
   if (!updatedOrder) throw new Error('Order not found')
+
+  sendPurchaseReceiptEmail({
+    // @ts-expect-error type error
+    order: {
+      ...updatedOrder,
+      shippingAddress: updatedOrder.shippingAddress as ShippingAddress,
+      paymentResult: updatedOrder.paymentResult as PaymentResult,
+    },
+  })
 }
 
 /**
