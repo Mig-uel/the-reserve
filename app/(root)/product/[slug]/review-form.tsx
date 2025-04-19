@@ -21,32 +21,19 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { createUpdateReview } from '@/lib/actions/review.actions'
 import { StarIcon } from 'lucide-react'
 import { useState } from 'react'
 
-export default function ReviewForm({
-  userId,
-  productId,
-}: {
-  userId: string
-  productId: string
-}) {
+export default function ReviewForm({ productId }: { productId: string }) {
   const [isOpen, setIsOpen] = useState(false)
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleReviewSubmit = async (...a) => ({
-    message: 'Review submitted successfully',
-    success: true,
-  })
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <Button onClick={() => setIsOpen(true)}>Leave a Review</Button>
 
       <DialogContent className='sm:max-w-[425px]'>
-        <FormContainer
-          action={handleReviewSubmit.bind(null, userId, productId)}
-        >
+        <FormContainer action={createUpdateReview.bind(null, productId)}>
           <DialogHeader>
             <DialogTitle>Leave a Review</DialogTitle>
             <DialogDescription>
@@ -58,6 +45,7 @@ export default function ReviewForm({
             <div>
               <Label htmlFor='title'>Title</Label>
               <Input
+                name='title'
                 type='text'
                 id='title'
                 placeholder='Enter a title'
@@ -68,6 +56,7 @@ export default function ReviewForm({
             <div>
               <Label htmlFor='description'>Description</Label>
               <Textarea
+                name='description'
                 id='description'
                 placeholder='Enter a description'
                 required
@@ -76,12 +65,12 @@ export default function ReviewForm({
 
             <div>
               <Label htmlFor='rating'>Rating</Label>
-              <Select required>
+              <Select name='rating' required>
                 <SelectTrigger className='w-full'>
                   <SelectValue placeholder='Select a rating' />
                 </SelectTrigger>
 
-                <SelectContent>
+                <SelectContent id='rating'>
                   {Array.from({ length: 5 }, (_, i) => i + 1).map((rating) => (
                     <SelectItem key={rating} value={String(rating)}>
                       {rating} <StarIcon />
