@@ -14,7 +14,7 @@ import {
   Section,
   Tailwind,
   Text,
-} from '\@react-email/components'
+} from '@react-email/components'
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -114,7 +114,8 @@ export default function PurchaseReceiptEmail({ order }: OrderInformationProps) {
             </Section>
 
             <Section className='border border-solid border-gray-500 rounded-lg p-4 md:p-6 my-4'>
-              {order.orderItems.map((item) => (
+              {/* @ts-expect-error fix Order type orderItems to orderitems */}
+              {order.orderitems.map((item) => (
                 <Row key={item.productId} className='mt-8'>
                   <Column className='w-20'>
                     <Img
