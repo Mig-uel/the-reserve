@@ -40,4 +40,5 @@ export type Review = z.infer<typeof InsertReviewSchema> & {
   user?: {
     name: string
   }
+  numReviews: number
 }
