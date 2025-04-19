@@ -29,6 +29,7 @@ export default function ReviewForm({ productId }: { productId: string }) {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
+    // TODO: close dialog on success
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <Button onClick={() => setIsOpen(true)}>Leave a Review</Button>
 
