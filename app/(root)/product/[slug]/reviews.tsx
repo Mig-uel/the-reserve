@@ -23,7 +23,10 @@ export default function Reviews({
       {!reviews.length ? <div>No reviews yet</div> : null}
 
       {userId.length ? (
-        <ReviewForm userId={userId} productId={productSlug} />
+        <ReviewForm
+          // userId={userId}
+          productId={productSlug}
+        />
       ) : (
         <div>
           <Button asChild variant='link' className='px-1 text-md'>
