@@ -15,6 +15,8 @@ import {
   Tailwind,
   Text,
 } from '\@react-email/components'
+import dotenv from 'dotenv'
+dotenv.config()
 
 type OrderInformationProps = {
   order: Order
