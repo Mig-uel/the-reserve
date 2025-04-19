@@ -1,5 +1,6 @@
 import ProductImages from '@/components/shared/product/product-images'
 import ProductPrice from '@/components/shared/product/product-price'
+import { MiniSpinner } from '@/components/shared/spinner'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { getProductBySlug } from '@/lib/actions/product.actions'
@@ -7,7 +8,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import AddToCart from '../../../../components/shared/product/add-to-cart'
-import { MiniSpinner } from '@/components/shared/spinner'
+import ReviewsList from './reviews-list'
 
 type Props = {
   params: Promise<{ slug: string }>
@@ -104,6 +105,14 @@ export default async function ProductDetailsPage({ params }: Props) {
             </Card>
           </div>
         </div>
+      </section>
+
+      {/* Customer Reviews */}
+      <section className='mt-10'>
+        <h2 className='h2-bold'>Customer Reviews</h2>
+        <Suspense fallback={<MiniSpinner />}>
+          <ReviewsList productId={product.id} productSlug={product.slug} />
+        </Suspense>
       </section>
     </>
   )
